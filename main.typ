@@ -8,7 +8,7 @@
   #show link: underline
   = Dispensa di Algoritmi e Complessità
 
-  Appunti del corso di #link("https://boldi.di.unimi.it/Corsi/AlgComp2025/")[_Algoritmi e Complessità_] (a.a. 2024/25), tenuto dal Prof. _Paolo Boldi_, Corso di Laurea in Informatica Magistrale, Università degli Studi di Milano.
+  Appunti del corso di #link("https://boldi.di.unimi.it/Corsi/AlgComp2025/")[_Algoritmi e Complessità_] (a.a. 2025/26), tenuto dal Prof. _Paolo Boldi_, Corso di Laurea in Informatica Magistrale, Università degli Studi di Milano.
 
   Realizzati da #(authors.map(author => [#link("https://github.com/" + author.at(1))[#text(author.at(0))]]).join([, ])), con il contributo di #link("https://github.com/Favo02/algoritmi-e-complessita/graphs/contributors")[altri collaboratori].
 
