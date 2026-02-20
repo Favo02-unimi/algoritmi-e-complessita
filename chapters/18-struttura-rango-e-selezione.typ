@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Struttura di Rango e Selezione (Statica)
 
-#attenzione[
+#warning[
   La versione presentata della struttura è *statica*, ovvero non è modificabile dopo la costruzione (immutabile).
   È possibile solo interrogarla.
 
@@ -22,12 +22,12 @@ Formalmente:
 
   2. $forall k <= "rank"_underline(b)(n), quad "select"_underline(b)(k) = max { p space | space "rank"_underline(b)(p) <= k }$
 
-  #informalmente[
+  #informally[
     - $"rank"(p)$ conta il numero di $1$ fino alla posizione $p$ (*non* inclusa).
     - $"select"(k)$ posizione massima il cui rank è uguale a $k$, ovvero l'indice del $(k+1)$-esimo uno.
   ]
 
-  #attenzione[
+  #warning[
     Entrambe le primitive hanno una entry _fittizia_:
     - $"rank"(n)$: rank dell'indice oltre la fine del vettore, restituisce il numero totale di $1$ ($= m$)
     - $"select"("rank"(n))$: equivalente a $"select"(m)$, indice del $(m+1)$-esimo uno, ma non esistendo abbastanza uni, viene restituita la fine del vettore, ovvero $n$.
@@ -100,19 +100,19 @@ Formalmente:
   ],
 )
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   Il numero di uni (rank), prima dell'indice del $(k+1)$-esimo uno (select) è, ovviamente, $k$:
   $ forall k, quad "rank"("select"(k)) = k $
 ]
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   L'indice del $("numero di uni prima di" p +1)$-esimo uno (ovvero il prossimo uno) è almeno grande quanto $p$:
   $ forall p, quad "select"("rank"(p)) >= p $
 
   In caso $b_p = 1$, allora il $("numero di uni prima di" p +1)$-esimo uno è esattamente $p$, dato che il prossimo uno è lui stesso (rank non conta la posizione stessa):
   $ forall p, quad "select"("rank"(p)) = p $
 
-  #nota[
+  #note[
     Questa proprietà ci permette sempre di risalire al vettore originale.
   ]
 ] <rank-select-operazioni-inverse>
@@ -133,7 +133,7 @@ La versione massimalista è veloce ma occupa molto spazio, non è nemmeno compat
 
 == Struttura di Jacobson per il Rank
 
-#attenzione[
+#warning[
   La struttura di Jacobson è utilizzabile solo per il rank, non supporta la select.
 ]
 
@@ -226,7 +226,7 @@ Questo tipo di tecnica prende il nome di #text(green)[*Four Russians Trick*].
 
 === Spazio occupato
 
-#nota[
+#note[
   Per facilità, assumeremo che la dimensione $n$ è una potenza di $2$.
 ]
 
@@ -237,7 +237,7 @@ Quanto spazio occupano i #text(blue)[superblocchi] e i #text(orange)[blocchi]?
 - #text(orange)[*Blocchi*]: la tabella ha $n / (1/2 log n)$ righe, tuttavia il numero che ciascuna deve contenere è limitato, sono al massimo la grandezza del superblocco, ovvero $(log n)^2$, rappresentabili in $log((log n)^2)$ bit:
   $ n / (1/2 log n) log (log n)^2 = n / (1/2 log n) 2 log log n = mr(o(n)) $
 
-  #nota[
+  #note[
     Proprietà dei logaritmi:
     $ log x^y = y log x $
     Ma non vale
@@ -254,13 +254,13 @@ Quanto spazio occupano i #text(blue)[superblocchi] e i #text(orange)[blocchi]?
     = mr(o(n))
   $
 
-#attenzione[
+#warning[
   Per poter determinare il tipo di ogni blocco, è necessario *conservare* il vettore originale $underline(b)$.
 
   Supponiamo che isolare un blocco si possa fare in tempo costante.
 ]
 
-#nota[
+#note[
   Si potrebbe tagliare l'implementazione e tenere solo #text(blue)[superblocchi] e #text(orange)[blocchi].
   Non usando #text(green)[four russians trick], è necessario scorrere il blocco per contare gli $1$, rendendo l'accesso non più costante ma logaritmico.
 
@@ -271,7 +271,7 @@ Spazio *totale* utilizzato:
 $ D_n = underbrace(n, "dim" underline(b)(n)) + mr(o(n)) = Z_n + o(Z_n) $
 Si tratta dunque di una *struttura statica succinta per il rango* con tempo di accesso costante.
 
-#informalmente[
+#informally[
   L'approccio di Jacob *lavora a livelli*:
   - le prime tabelle (superblocchi) contengono poche righe ma i valori contenuti sono grandi
   - scendendo di livello (blocchi), il numero di tabelle cresce ma i valori sono più piccoli
@@ -280,7 +280,7 @@ Si tratta dunque di una *struttura statica succinta per il rango* con tempo di a
 
 == Struttura di Clark per la Select
 
-#attenzione[
+#warning[
   La struttura di Clark è utilizzabile solo per la select, non supporta il rank.
 ]
 
@@ -295,11 +295,11 @@ Anche in questo caso sfruttiamo una tecnica che lavora per *livelli*:
     & = n / (log(log n)) = o(n)
   $
 
-  #attenzione[
+  #warning[
     Non memorizziamo gli uni in posizione $log n log log n$ rispetto all'inizio del vettore, ma memorizziamo gli $(log n log log n)$-esimi uni (gli zeri non influiscono).
   ]
 
-  #esempio[
+  #example[
     Con $n = 1024$ memoriziamo la posizione di un uno ogni $log 1024 dot log log 1024 approx 33$.
   ]
 
@@ -382,7 +382,7 @@ Anche in questo caso sfruttiamo una tecnica che lavora per *livelli*:
 
     Lo spazio occupato:
 
-    #teorema("Osservazione 1")[
+    #theorem(title: "Osservazione 1")[
       Dato che siamo nel #text(blue)[sottocaso II B] (il #text(orange)[livello III] esiste solo in questo caso), allora:
 
       $
@@ -394,12 +394,12 @@ Anche in questo caso sfruttiamo una tecnica che lavora per *livelli*:
       $
     ] <clark-oss1>
 
-    #teorema("Osservazione 2")[
+    #theorem(title: "Osservazione 2")[
       Siccome siamo nel caso #text(orange)[III B], allora vale:
       $
         overline(r_i^j) < log overline(r_i^j) log r_i (log log n)^2
       $
-      Di conseguenza usando #link-teorema(<clark-oss1>):
+      Di conseguenza usando #link-theorem(<clark-oss1>):
       $
         overline(r_i^j) &< underbrace(log overline(r_i^j), <= 4 log log n) dot underbrace(log r_i, <= 4 log log n) dot (log log n)^2\
         &<= 16(log log n)^2 (log log n)^2\
@@ -410,10 +410,10 @@ Anche in questo caso sfruttiamo una tecnica che lavora per *livelli*:
     Usando il four russians trick, il numero di bit utilizzati è pari a:
     $
       &<= underbrace(2^overline(r_i^j), "numero tabelle") dot underbrace(overline(r_i^j), "righe") dot underbrace(log overline(r_i^j), "bit per valore") \
-      &underbrace(<=, #link-teorema(<clark-oss2>)) 2^mb(16(log log n)^4) dot mb(16(log log n)^4) dot log mb(16(log log n)^4) = o(n)
+      &underbrace(<=, #link-theorem(<clark-oss2>)) 2^mb(16(log log n)^4) dot mb(16(log log n)^4) dot log mb(16(log log n)^4) = o(n)
     $
 
-#informalmente[
+#informally[
   La struttura di Clark per Select usa un approccio a *tre livelli gerarchici* per memorizzare efficientemente le posizioni degli uni:
 
   + #text(red)[*Livello I*]: memorizziamo solo le posizioni degli `1` multipli di $log n log log n$.

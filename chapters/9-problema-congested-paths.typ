@@ -1,12 +1,12 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Congested Paths [NPOc]
 
-#attenzione[
+#warning[
   Questo problema è noto in letteratura come "Disjoint Paths".
 ]
 
-#informalmente[
+#informally[
   Dato un grafo orientato e delle _sorgenti_ e _destinazioni_, vogliamo collegare le sorgenti con le corrispondenti destinazioni attraverso un _cammino_ nel grafo.
 
   Dato un tasso di congestione intero $c$, vogliamo che non ci siano più di $c$ cammini che passino per uno stesso arco.
@@ -29,7 +29,7 @@ Formalmente:
 - *$C_Pi$* = $|I|$: numero di coppie collegate
 - *$t_Pi$*$= max$
 
-#nota[
+#note[
   È possibile specificare la stessa sorgente o destinazione più volte, basta inserirla più volte nella lista di sorgenti/destinazioni.
   L'algoritmo, lavorando sugli indici, le considererà coppie distinte.
 ]
@@ -48,7 +48,7 @@ Per l'algoritmo abbiamo bisogno di definire:
     ell : A -> bb(R)^+ \
     ell(pi) = ell(x_1, x_2)+ell(x_2, x_3)+dots+ell(x_(i-1), x_i)
   $
-  #attenzione[
+  #warning[
     Questa funzione varia nel tempo, possiamo cambiare il costo di un arco.
   ]
 
@@ -80,7 +80,7 @@ Oltre all'input del problema $"CongestedPath"$, all'algoritmo viene passato anch
   [*Output* $I, P$],
 )
 
-#informalmente[
+#informally[
   L'algoritmo continua a scegliere il cammino minimo più corto tra una coppia sorgente-destinazione, utilizzando l'algoritmo di Dijkstra (non basta una BFS dato che i pesi sugli archi $ell$ esistono e non sono tutti uguali).
 
   Una volta selezionato il cammino minimo, gli archi che ne fanno parte vengono puniti, in modo da non utilizzarli troppe volte.
@@ -100,7 +100,7 @@ Un certo cammino $pi$ può avere alcune proprietà in determinati istanti dell'e
 
 / Insieme dei cammini corti utili $C_i$: insieme dei cammini corti e utili, prima dell'esecuzione dell'$i$-esima iterazione
 
-#attenzione[
+#warning[
   Queste proprietà variano in base all'istante (iterazione) in cui siamo.
 ]
 
@@ -109,7 +109,7 @@ In un dato istante, procedendo con l'esecuzione, le *trasformazioni possibili* p
 - $pi "corto" -> pi "lungo"$ _(il costo dei suoi archi aumenta)_
 - $pi "esistente" -> pi "non esistente"$ _(un suo arco viene cancellato)_
 
-#attenzione[
+#warning[
   Andremo a considerare solo la *prima fase* per l'analisi, ma l'algoritmo potrebbe trovare *ulteriori cammini* nella seconda fase.
   Questi ulteriori cammini non causano problemi all'analisi effettuata dato che andrebbero a migliorare soluzione.
 ]
@@ -123,7 +123,7 @@ $
   - non esistono più coppie collegabili
   - rimangono coppie collegabili solo con cammini *lunghi*. Definiamo *$overline(ell)$* come la funzione nell'istante $C_s$ dove *non* ci sono più cammini utili
 
-#attenzione[
+#warning[
   L'algoritmo potrebbe essere modificato in modo tale che durante la prima fase non vengano cancellati archi, ma solo messi in un _buffer in attesa di cancellazione_.
   Essi saranno cancellati solo all'inizio della seconda fase.
 
@@ -133,17 +133,17 @@ $
   L'analisi verrà effettuata su questa versione equivalente dell'algoritmo.
 ]
 
-#teorema("Lemma")[
+#theorem(title: "Lemma")[
   Supponiamo ora di eseguire l'algoritmo, che produce una soluzione $I$.
   Tutte le coppie trovate dalla soluzione ottima $I^*$ ma non dalla soluzione $I$ devono essere collegate da un cammino $pi_i^*$ lungo:
 
   $ forall i in I^* \\ I, quad overline(ell)(pi_i^*) >= beta^c $
 
-  #informalmente[
+  #informally[
     Se esistono coppie sorgente-destinazione non collegate, allora devono per forza essere connesse da cammini lunghi (altrimenti l'algoritmo avrebbe trovato tali cammini).
   ]
 
-  #dimostrazione[
+  #proof[
     Supponiamo per assurdo che esista un cammino $pi_i^*$ selezionato dalla soluzione ottima tale che sia corto:
     $ overline(ell)(pi_i^*) < beta^c $
 
@@ -154,7 +154,7 @@ $
   ]
 ] <congested-paths-lemma-soluzione-ottima>
 
-#teorema("Teorema")[
+#theorem[
   Il teorema fornisce un limite superiore alla somma del peso degli archi selezionati alla fine della prima fase:
   $ sum_(a in A) overline(ell)(a) quad <= quad beta^(c+1) |I_s| + m $
 
@@ -162,7 +162,7 @@ $
   - $I_s$ è l'insieme dei cammini aggiunti nella prima fase (numero di iterazioni)
   - $m$ è il numero di archi del grafo
 
-  #dimostrazione[
+  #proof[
     Vogliamo dimostrare che ad ogni iterazione, la somma dei pesi degli archi cresce al massimo di $beta^(c+1)$, lo facciamo per induzione:
 
     + *Passo Base*. All'inizio il peso di tutti gli archi è inizializzato a $1$:
@@ -201,13 +201,13 @@ $
   ]
 ] <congested-paths-teorema-upper-bound-somma-pesi-archi>
 
-#teorema("Osservazione")[
+#theorem(title: "Osservazione")[
   La somma del peso dei cammini $pi_i^*$ selezionati dalla soluzione ottima $I^*$ ma non dalla soluzione dell'algoritmo $I$ è grande almeno quanto $beta^c$ per il numero di questi cammini:
 
   $ sum_(i in I^* \\ I) overline(ell)(pi_i^*) quad >= quad beta^c |I^* \\ I| $
 
-  #dimostrazione[
-    Per il #link-teorema(<congested-paths-lemma-soluzione-ottima>), ogni cammino non selezionato è lungo:
+  #proof[
+    Per il #link-theorem(<congested-paths-lemma-soluzione-ottima>), ogni cammino non selezionato è lungo:
     $
                                forall i in I^* \\ I, & quad overline(ell)(pi_i^*) >= beta^c \
       sum_(i in I^* \\ I) overline(ell)(pi_i^*) quad & >= quad sum_(i in I^* \\ I) beta^c \
@@ -216,33 +216,33 @@ $
   ]
 ] <congested-paths-oss1>
 
-#teorema("Osservazione")[
-  La somma del peso dei cammini selezionati dalla soluzione ottima $I^*$, ma non dalla soluzione dell'algoritmo $I$, è limitata da $c$ volte il peso massimo della somma dei cammini alla fine della prima fase (trovato in #link-teorema(<congested-paths-teorema-upper-bound-somma-pesi-archi>)):
+#theorem(title: "Osservazione")[
+  La somma del peso dei cammini selezionati dalla soluzione ottima $I^*$, ma non dalla soluzione dell'algoritmo $I$, è limitata da $c$ volte il peso massimo della somma dei cammini alla fine della prima fase (trovato in #link-theorem(<congested-paths-teorema-upper-bound-somma-pesi-archi>)):
 
   $ sum_(i in I^* \\ I)overline(ell)(pi_i^*) quad <= quad c(beta^(c+1)|I_s|+m) $
 
-  #dimostrazione[
+  #proof[
     Per definizione del problema, nessun arco $a in A$ può essere usato dai cammini più di $c$ volte.
     Di conseguenza, anche se tutti i cammini usassero tutti gli archi:
     $ sum_(i in I^* \\ I) overline(ell)(pi_i^*) quad <= quad c sum_(a in A) overline(ell)(a) $
-    Per il #link-teorema(<congested-paths-teorema-upper-bound-somma-pesi-archi>):
+    Per il #link-theorem(<congested-paths-teorema-upper-bound-somma-pesi-archi>):
     $ c mr(sum_(a in A) overline(ell)(a)) <= c mr((beta^(c+1)|I_s|+m)) space qed $
   ]
 
 ] <congested-paths-oss2>
 
-#teorema("Teorema")[
+#theorem[
   L'algoritmo $"PricingCongestedPaths"$ con input $beta = m^(1/(c+1))$ dà una
   $ (2 c m^(1/(c+1))+1)"-approssimazione" $
 
-  #dimostrazione[
+  #proof[
     Partiamo applicando il principio di inclusione-esclusione sull'insieme $I^*$:
     $ I^* = (I^*\\I) + (I^* inter I) $
     Passando alle cardinalità e moltiplicando per $beta^c$:
     $ beta^c |I^*| <= mr(beta^c |I^* \\ I|) + beta^c mb(|I^* inter I|) $
-    Per #mr(link-teorema(<congested-paths-oss1>)) e dato che #mb("l'intersezione") tra due insiemi è sempre $<=$ dei due insiemi originali:
+    Per #mr(link-theorem(<congested-paths-oss1>)) e dato che #mb("l'intersezione") tra due insiemi è sempre $<=$ dei due insiemi originali:
     $ beta^c |I^*| <= mr(sum_(i in I^* \\ I) overline(ell)(pi_i^*)) + beta^c mb(|I|) $
-    Per #mr(link-teorema(<congested-paths-oss2>)):
+    Per #mr(link-theorem(<congested-paths-oss2>)):
     $ beta^c |I^*| <= mr(c(beta^(c+1) mg(|I_s|) + m)) + beta^c |I| $
     Siccome il numero di iterazioni totali $mg(|I|)$ è maggiore del numero di iterazioni della prima fase $mg(|I_s|)$:
     $ beta^c |I^*| <= c(beta^(c+1) mg(|I|) + m) + beta^c |I| $
@@ -288,7 +288,7 @@ Tipicamente $c$ è un numero piccolo, fissandolo otteniamo:
   ),
 )
 
-#informalmente[
+#informally[
   Il tasso di approssimazione ottenuto è *pessimo*, soprattutto se le coppie che si vogliono collegare sono poche.
   Ha senso utilizzare questo algoritmo solo se il numero di coppie sorgente-destinazione è molto elevato *$k >> 2sqrt(m) + 1$*.
 ]

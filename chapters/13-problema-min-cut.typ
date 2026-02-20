@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Min Cut (taglio minimo) [NPOc]
 
-#informalmente[
+#informally[
   Dividere i vertici di un grafo in due insiemi disgiunti non vuoti.
   L'obiettivo è minimizzare il numero di lati da "tagliare" per ottenere la divisione.
 
@@ -54,14 +54,14 @@ Formalmente:
   $ |E_S|, quad E_S = {e in E quad "t.c." quad e inter S != emptyset, quad e inter S^c != emptyset } $
 - *$t_Pi$*$= min$
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   Il taglio minimo ha dimensione $<=$ del grado del vertice con grado minimo del grafo.
 
-  #dimostrazione[
+  #proof[
     Basta tagliare tutti i lati incidenti sul vertice $v$ di grado minimo, isolando di conseguenza il vertice $v$.
   ]
 
-  #esempio[
+  #example[
     Il taglio può essere più piccolo.
 
     #figure(
@@ -113,12 +113,12 @@ Formalmente:
 Contrarre un grafo $G$ su un lato $e$, indicato con *$G arrow.b e$*, significa rimuovere il lato $e$ dal grafo, condensando in un unico vertice gli estremi del lato $e$.
 Questi nuovi vertici diventano delle classi di equivalenza tra più vertici.
 
-#nota[
+#note[
   È possibile che una contrazione possa generare dei *multigrafi*.
   Questo evento avviene quando esiste un vertice connesso ad entrambe le estremità del lato contratto.
 ]
 
-#esempio[
+#example[
   #figure(
     cetz.canvas({
       import cetz.draw: *
@@ -191,7 +191,7 @@ Questi nuovi vertici diventano delle classi di equivalenza tra più vertici.
   )
 ]
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   Ogni lato di un grafo contratto corrisponde a un lato del grafo originale.
 
   Gli unici lati persi sono i _self-loop_, ovvero i lati che iniziano e finiscono nei vertici contratti (ovvero il lato contratto stesso o i suoi lati paralleli del multigrafo).
@@ -213,12 +213,12 @@ Questi nuovi vertici diventano delle classi di equivalenza tra più vertici.
   [*Output* la classe di equivalenza di una delle due estremità #emph("// ovvero tutti i vertici che sono stati \"compressi\" in quel vertice")],
 )
 
-#nota[
+#note[
   Ad ogni contrazione, i due vertici compressi si uniscono nella stessa classe di equivalenza.
   Dato che ci fermiamo ad esattamente due vertici rimanenti, allora avremo due classi di equivalenza.
 ]
 
-#esempio[
+#example[
   Esecuzione dell'algoritmo di Karger su un grafo con 5 vertici:
 
   #figure(
@@ -329,36 +329,36 @@ Sia:
   $
 - *$G_i$* il grafo prima dell'$i$-esima contrazione
 
-#teorema("Osservazione")[
+#theorem(title: "Osservazione")[
   Il numero di vertici del grafo $G_i$ è:
   $ |V_(G_i)| quad = quad n_(G_i) quad = quad n-i+1 $
 
-  #dimostrazione[
+  #proof[
     Ad ogni contrazione uniamo due vertici, quindi il numero di vertici viene ridotto di $1$ ad ogni iterazione.
     Dato che siamo prima ($+1$) dell'$i$-esima iterazione e il grafo originale aveva $n$ vertici, allora abbiamo $n-i+1$ vertici. $qed$
   ]
 ]
 
-#teorema("Osservazione")[
+#theorem(title: "Osservazione")[
   Ogni taglio di $G_i$ corrisponde a un taglio di $G$ della stessa dimensione.
   Quindi il vertice di grado minimo di $G_i$ ha grado almeno grande quanto il taglio ottimo $k^*$.
 
-  #dimostrazione[
+  #proof[
     Prendendo un qualsiasi grafo, un suo taglio è un insieme di lati.
     Ma questi lati corrispondono perfettamente a dei lati del grafo originale.
 
-    Gli unici lati persi dalla contrazione, per #link-teorema(<min-cut-lati-persi-contrazione>), sono lati che iniziano e finiscono su vertici che fanno parte della stessa partizione, ovvero che non sono interessati dal taglio.
+    Gli unici lati persi dalla contrazione, per #link-theorem(<min-cut-lati-persi-contrazione>), sono lati che iniziano e finiscono su vertici che fanno parte della stessa partizione, ovvero che non sono interessati dal taglio.
 
     Di conseguenza qualsiasi taglio di $G_i$ corrisponde a un taglio di $G$ della stessa dimensione.
-    Quindi continua a valere #link-teorema(<min-cut-taglio-minimo-grado>):
+    Quindi continua a valere #link-theorem(<min-cut-taglio-minimo-grado>):
     $
       min_v d_(G_i)(v) quad >= quad k^*_(G_i) quad = quad k^*_G quad = quad k^* space qed
     $
   ]
 ] <min-cut-oss-2>
 
-#teorema("Osservazione")[
-  Sommando i gradi di tutti i vertici di $G_i$, per #link-teorema(<min-cut-oss-2>), ognuno è $>= k^*$:
+#theorem(title: "Osservazione")[
+  Sommando i gradi di tutti i vertici di $G_i$, per #link-theorem(<min-cut-oss-2>), ognuno è $>= k^*$:
   $
                         mr(sum_(v in V_(G_i)) d_(G_i)(v)) quad & >= quad k^* underbrace((n-i+1), "num vertici" G_i) \
     underbrace(mr(2 m_(G_i)), "ogni lato lo conto"\ 2 "volte") & >= quad k^* (n-i+1) \
@@ -368,17 +368,17 @@ Sia:
 
 Sia *$cal(E)_i$* l'evento: "$"all'"i"-esima iterazione non si è contratto un lato di" E_(S^*)$".
 
-#informalmente[
+#informally[
   $cal(E)_i$ rappresenta la casistica in cui *nessun lato* della *soluzione ottima* è stato contratto all'$i$-esima iterazione.
   I lati della soluzione ottima vanno *preservati* per poter effettuare il taglio ottimo.
   Di conseguenza, l'evento $cal(E)_i$ rappresenta una scelta casuale _fortunata_.
 ]
 
-#teorema("Lemma")[
+#theorem(title: "Lemma")[
   La probabilità che all'$i$-esima iterazione nessun lato della soluzione ottima $E_(S^*)$ sia stato tagliato, condizionata al fatto che non sia successo prima, è:
   $ P[cal(E)_i | cal(E)_1, ..., cal(E)_(i-1)] >= (n-i-1)/(n-i+1) $
 
-  #dimostrazione[
+  #proof[
     Invertiamo l'evento usando il complementare:
     $
       P[cal(E)_i | cal(E)_1, ..., cal(E)_(i-1)] = 1 - P[not cal(E)_i | cal(E)_1, ..., cal(E)_(i-1)]
@@ -390,7 +390,7 @@ Sia *$cal(E)_i$* l'evento: "$"all'"i"-esima iterazione non si è contratto un la
 
     $ P[not cal(E)_i | cal(E)_1, ..., cal(E)_(i-1)] = mb(k^*)/mr(m_(G_i)) $
 
-    Per #link-teorema(<min-cut-oss-3>):
+    Per #link-theorem(<min-cut-oss-3>):
 
     $
       1 - mb(k^*)/mr(m_(G_i)) quad & >= quad 1 - (mb(k^*) dot mr(2))/mr(k^* (n-i+1)) \
@@ -401,14 +401,14 @@ Sia *$cal(E)_i$* l'evento: "$"all'"i"-esima iterazione non si è contratto un la
   ]
 ] <min-cut-lemma-p>
 
-#teorema("Teorema")[
+#theorem[
   L'algoritmo di Karger trova il *taglio minimo* con probabilità $>= 1/binom(n, 2) = 2/(n(n-1))$.
 
-  #dimostrazione[
+  #proof[
     Vogliamo dimostrare che durante l'esecuzione dell'algoritmo *non* vengano toccati i lati del taglio minimo:
     $
       P[cal(E)_1 inter cal(E)_2 inter ... inter cal(E)_(n-2)] & underbrace(=, #link(<chain-rule>)[chain rule]) P[cal(E)_1] dot P[cal(E)_2 | cal(E)_1] dot P[cal(E)_3 | cal(E)_1, cal(E)_2] dots.c \
-      & underbrace(>=, #link-teorema(<min-cut-lemma-p>)) (n-2)/n dot (n-3)/(n-1) dot ... dot 1/3 \
+      & underbrace(>=, #link-theorem(<min-cut-lemma-p>)) (n-2)/n dot (n-3)/(n-1) dot ... dot 1/3 \
       & quad = quad (limits(product)_(i=1)^(n-2)i)/(limits(product)_(i=3)^n i) \
       & quad = quad (n-2)! / (mr(n!)/(2)) \
       & quad = quad (2 (n-2)!)/(mr((n-2)!(n-1)n)) \
@@ -417,24 +417,24 @@ Sia *$cal(E)_i$* l'evento: "$"all'"i"-esima iterazione non si è contratto un la
     $
   ]
 
-  #nota[
+  #note[
     L'algoritmo produce l'ottimo con una certa probabilità.
 
     Tuttavia, se l'algoritmo non trova la soluzione ottima, *non sappiamo* di quanto essa sia *distante dall'ottimo*.
   ]
 ]
 
-#attenzione[
+#warning[
   La probabilità trovata è *molto piccola* (decresce in modo quadratico al crescere di $n$), di conseguenza l'algoritmo trova raramente l'ottimo.
 
   Possiamo però *iterare l'algoritmo*, in modo da far *crescere* la *probabilità* di trovare l'ottimo.
   Tra tutte le iterazioni prendiamo la soluzione migliore (minima).
 ]
 
-#teorema("Corollario")[
+#theorem(title: "Corollario")[
   Eseguendo Karger $(binom(n, 2) ln n)$ volte, otteniamo il taglio minimo con probabilità $>= 1 - 1/n$.
 
-  #dimostrazione[
+  #proof[
     Ad ogni iterazione, la probabilità che l'algoritmo *non* trovi l'ottimo è:
     $ <= 1 - 1/binom(n, 2) $
 
@@ -456,7 +456,7 @@ Sia *$cal(E)_i$* l'evento: "$"all'"i"-esima iterazione non si è contratto un la
   ]
 ]
 
-#informalmente[
+#informally[
   Perché l'algoritmo viene eseguito questo numero specifico di volte (polinomiale)?
 
   Perché in questo modo abbiamo una funzione di *probabilità* che *tende a $1$* per $n -> infinity$, quindi per $n$ grandi è quasi certo che l'algoritmo trovi l'ottimo.

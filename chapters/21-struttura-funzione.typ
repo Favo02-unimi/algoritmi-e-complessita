@@ -1,4 +1,4 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Struttura Funzione Statica (Dizionario, Mappa, Array associativo)
 
@@ -20,7 +20,7 @@ $
 Vogliamo dunque che gli elementi di $S$ cadano in bucket distinti.
 Questa proprietà non è esplicitata dato che $S$ *non* è *noto* a priori.
 
-#esempio[
+#example[
   Sia $h$ una funzione di hash che funziona perfettamente su tutti gli interi $in [0, 1000]$.
   La funzione divide il numero per $100$ e lo inserisce nel bucket corrispondente.
 
@@ -32,12 +32,12 @@ Questa proprietà non è esplicitata dato che $S$ *non* è *noto* a priori.
 
 Chiamata anche Simple Uniform Hashing Assumption (SUHA).
 
-#teorema("Definizione")[
+#theorem(title: "Definizione")[
   Dati $U$ e $m$, si sceglie la funzione hash: $h : U -> m$ *uniformemente a caso*, ovvero che valgano:
   + *uniformità*: qualsiasi chiave $k$ ha la stessa probabilità di essere mappata in uno qualsiasi degli $m$ bucket
   + *indipendenza*: una mappatura è indipendente dalle mappature delle altre chiavi
 
-  #attenzione[
+  #warning[
     Si tratta di un'*assunzione impraticabile*.
     Tutte le funzioni di hash sono deterministiche, quindi bisognerebbe scegliere una funzione di hash diversa a caso ogni volta.
 
@@ -51,7 +51,7 @@ Chiamata anche Simple Uniform Hashing Assumption (SUHA).
 Nella pratica, vengono studiate alcune strutture assumendo la Full-Randomness Assumption.
 I risultati ottenuti sotto l'assunzione vengono rilassati, misurandone il tasso di peggioramento.
 
-#esempio[
+#example[
   Supponiamo di voler hashare dei nomi di massimo $18$ caratteri e di avere a disposizione $14$ bucket:
   $ U = {a, b, ..., z}^(<=18), quad m = 14 $
   Solamente riempire la tabella che mappa ogni entry al suo bucket è impossibile, dato che ci sono $|U| = 26^18$ entry possibili.
@@ -70,7 +70,7 @@ I risultati ottenuti sotto l'assunzione vengono rilassati, misurandone il tasso 
 
 == ADT
 
-#informalmente[
+#informally[
   La struttura dati che vogliamo rappresentare è un insieme di chiavi valori, dove le chiavi memorizzate sono $S$ (in un certo istante non avremo tutto l'universo $U$ memorizzato).
   Dato che la funzione è *statica*, la cardinalità di $S$ non cambia mai.
   Ogni chiave associa un valore rappresentabile con $r$ bit.
@@ -103,7 +103,7 @@ Durante la costruzione del grafo devono *valere* le seguenti proprietà:
 
 Se una di queste proprietà smette di valere, *scarto* le due funzioni di hash e le riestraggo, ricominciando.
 
-#nota[
+#note[
   Il tempo necessario per la costruzione di $G$ dipende dal numero di *nodi* $m$.
   Più $m$ è grande meno tentativi saranno necessari per rispettare tutte le proprietà.
 ]
@@ -116,7 +116,7 @@ $ x_(h_0("chiave")) + x_(h_1("chiave")) mod 2^r = "valore" $
 Possiamo creare così un sistema di $n$ *equazioni diofantee* con $m$ incognite ($x_0,dots,x_(m-1)$):
 $ forall s in S cases(x_(h_0(s)) + x_(h_1(s)) mod 2^r = f(s)) $
 
-#nota[
+#note[
   Un'equazione Diofantea è un'equazione in una o più incognite, i cui coefficienti sono numeri *interi*, e di cui si ricercano esclusivamente le soluzioni intere.
 ]
 
@@ -128,7 +128,7 @@ $ f(s) = (x_h_0(s) + x_h_1(s)) mod 2^r $
 
 Questo vettore occupa $m log 2^r = m r$ bit.
 
-#esempio[
+#example[
   - bucket: $m = 4$ (indici $0,1,2,3$)
   - chiavi $S = {"mela", "pera", "kiwi"}$, $n = 3$
   - funzione da memorizzare:
@@ -190,7 +190,7 @@ Una scelta fondamentale è il numero di bucket $m$.
 - più $m$ è *piccolo* più la struttura è *succinta* (dato che il vettore occupa $m r$ bit)
 - $m$ *tanto piccolo*, allora è *difficile* ottenere un grafo che rispetta le tre *proprietà* in tempi ragionevoli
 
-#teorema("Teorema")[
+#theorem[
   Se $m > 2.09n$ (dove $n = |S|$), il grafo $G$ è quasi sempre aciclico (il numero atteso di tentativi per ottenere un grafo $G$ aciclico è $2$).
 
   Il numero di bit per rappresentare una funzione di $n$ chiavi è
@@ -203,7 +203,7 @@ Nella definizione precedente abbiamo scelto solamente due funzioni di hash rando
 
 Se scegliessimo un numero $k > 2$ di *funzioni di hash* otterremmo un grafo di dimensione $k$, ovvero un *ipergrafo*, permettendoci di abbassare il parametro $m$ (quindi anche lo spazio occupato).
 
-#nota[
+#note[
   Un ipergrafo $H$ di dimensione $k$ è un grafo in cui un arco collega esattamente $k$ vertici (un grafo normale ha dimensione $k = 2$).
 
   Formalmente, $H(X,E)$ dove:
@@ -253,7 +253,7 @@ Devono continuare a valere le proprietà elencate precedentemente:
 + $forall x,y,z in S, space x != y, space y != z quad {h_0(x),h_1(x),h_2(x)} != {h_0(y),h_1(y),h_2(y)}$
 + #strike[aciclicità] pelabilità
 
-#attenzione[
+#warning[
   L'aciclicità *non* ha senso su un ipergrafo, non vuol dire niente.
 
   L'aciclicità era usata per garantire la *risolubilità* del sistema ottenuto dal grafo.
@@ -271,7 +271,7 @@ $
 
 Quando l'ipergrafo viene trasformato a sistema e viene trovato l'ordine di pelatura, esiste sempre una *variabile libera* (l'hinge) che ci permette di risolvere il sistema.
 
-#esempio[
+#example[
   #figure(
     grid(
       columns: 2,
@@ -351,7 +351,7 @@ Quando l'ipergrafo viene trasformato a sistema e viene trovato l'ordine di pelat
   Ottenendo la soluzione finale $[25, 0, 0, 12, 12]$.
 ]
 
-#nota[
+#note[
   Queste proprietà sono valide per ipergrafi di qualsiasi dimensione $k$ (dimensione intesa come grandezza di un iperlato, in questo caso $3$, non numero di nodi).
 ]
 
@@ -359,10 +359,10 @@ Quando l'ipergrafo viene trasformato a sistema e viene trovato l'ordine di pelat
 
 Possiamo chiederci se sia vantaggioso usare un ipergrafo con dimensione $k > 2$, al posto di un grafo "standard" ($k = 2$).
 
-#teorema("Teorema")[
+#theorem[
   Per ogni $k >= 2$, esiste un $gamma_k$ tale che, per ogni $m >= gamma_k n$, la costruzione del $k$-ipergrafo è pelabile e rispetta le altre due proprietà quasi certamente.
 
-  #informalmente[
+  #informally[
     Per ogni dimensione $k$, esiste un bound di $m$ (numero di nodi del grafo, ovvero numero di bucket delle funzioni di hash) che ci garantisce di trovare un ipergrafo valido in pochi tentativi.
   ]
 ]
@@ -374,7 +374,7 @@ Nello specifico:
 
 La *migliore* costruzione prevede di scegliere *$3$ funzioni di hash*.
 
-#informalmente[
+#informally[
   Quando questa tecnica è stata introdotta, il numero minimo di funzione hash necessarie non era stato dimostrato, era solamente un risultato sperimentale (provando con vari ipergrafi di dimensioni diverse).
 
   Negli anni si è trovata una formula per $gamma_k$, dimostrando che il minimo è in $3$.
@@ -385,7 +385,7 @@ La *migliore* costruzione prevede di scegliere *$3$ funzioni di hash*.
 Per stabilire se la nostra rappresentazione sia succinta, dobbiamo andare a stimare il *theoretical lower bound* per una funzione statica:
 $ f : S -> 2^r $
 
-#dimostrazione[
+#proof[
   Dato l'insieme delle chiavi $S$ di cardinalità $n$, ci sono $(2^r)^n$ funzioni:
   $
     Z_n & = log (2^r)^n \
@@ -403,7 +403,7 @@ $ f : S -> 2^r $
 
 L'unica cosa che viene memorizzata dalla rappresentazione proposta è l'*array* soluzione del sistema, ovvero un array $x$ di $m r$ bit.
 
-#nota[
+#note[
   In realtà avremmo anche bisogno di memorizzare le due/tre funzioni di hash utilizzate.
 
   Nel calcolo dello spazio utilizzato viene trascurata la loro dimensione, supponiamo che le funzioni di hash occupino "poco spazio".
@@ -418,7 +418,7 @@ Sull'array $underline(b)$ andremo ad usare una *rank/select*:
 - se $underline(b)_i = 0$, allora $x_i = 0$
 - se $underline(b)_i = 1$, usiamo rank e select per risalire al valore di $x_i$ nell'array di variabili non nulle
 
-#dimostrazione[
+#proof[
   Spazio utilizzato:
   $
     underbrace(n r, "elementi non nulli") + underbrace(m, "array di bit") + underbrace(o(m), "rank/select su m") \
@@ -427,7 +427,7 @@ Sull'array $underline(b)$ andremo ad usare una *rank/select*:
   $
 ]
 
-#attenzione[
+#warning[
   La compressione *non* è sempre *conveniente*:
   - soluzione non compressa = $gamma_3 n r$
   - soluzione compressa = $n r + gamma_3 n + o(n)$
@@ -462,7 +462,7 @@ Funzionamento:
 - viene calcolato il risultato:
   $ f(s) = (x_(h_0(s)) + x_(h_1(s)) + x_(h_2(s))) mod 2^r $
 
-#attenzione[
+#warning[
   La struttura *non memorizza* l'insieme delle chiavi $S$.
 
   Di conseguenza, se alla struttura diamo in pasto un qualsiasi elemento $in U in.not S$, non può riconoscere che l'input non è "valido", ma viene comunque costruita una risposta (stile _undefined behaviour_).
@@ -481,7 +481,7 @@ Una funzione di hash $quad h : U -> m quad$ si dice:
   $ |S| <= m $
 + *minimale perfetta* se e solo se $h$ è perfetta e $|S| = m$
 
-#esempio[
+#example[
   Un possibile utilizzo di un hash minimale perfetto è enumerare gli elementi di $S$.
 
   Basta mettere tutti gli elementi in un array e indicizzarlo con $h$.
@@ -502,7 +502,7 @@ $ Z_n = log n! approx n log n $
 
 La struttura è *compatta*.
 
-#attenzione[
+#warning[
   Abbiamo però risolto un problema molto più complesso, ovvero abbiamo voluto *decidere noi l'ordine* delle chiavi.
   Ma per essere minimale perfetto basta un *ordine qualsiasi*.
 
@@ -527,7 +527,7 @@ Dato che vogliamo una hash *iniettiva*, dobbiamo usare qualcosa che non appare m
 L'*hinge* $k$, per definizione, rispetta questa caratteristica.
 $ x_h_0(s) + x_h_1(s) + x_h_2(s) = h_(k)(s) $
 
-#attenzione[
+#warning[
   Tramite questo metodo otteniamo una funzione di hash perfetta ma *non minimale*: per come funziona MWHC, il numero di bucket è $m = gamma n >= n$ ($gamma = 1.23$), di conseguenza gli hinge utilizzati potrebbero eccedere $n$ e lasciare dei buchi.
 ]
 
@@ -538,7 +538,7 @@ $
                        & = n log n + n log gamma + gamma n + o(n)
 $
 
-#nota[
+#note[
   La grandezza degli elementi del vettore da memorizzare (soluzione del sistema) dipende dalla grandezza dei valori delle equazioni.
 
   Andando a ridurre i valori delle equazioni, riduciamo anche i bit necessari per ogni elemento del vettore che verrà memorizzato.
@@ -552,7 +552,7 @@ $ x_h_0(s) + x_h_1(s) + x_h_2(s) = k $
 Spazio occupato:
 $ n r + gamma n + o(n) = 2 n + gamma n + o(n) $
 
-#attenzione[
+#warning[
   Anche questa funzione è perfetta ma non *minimale* per lo stesso motivo di prima: l'output è nel range $[0, m-1]$ con $m = gamma n > n$.
 ]
 
@@ -562,14 +562,14 @@ Sfruttiamo una *rank/select* per fare ciò:
 - mettiamo a $1$ i risultati della funzione di hash (ci saranno esattamente $n$ uni)
 - andiamo a effettuare l'operazione di rank per sapere il valore compresso nell'intervallo $[0, n-1]$
 
-#nota[
+#note[
   Questa tecnica è generale e molto potente.
 
   Dato che la funzione (perfetta) restituisce un output più sparso di quello che ci serve, comprimiamo questo output usando un vettore di bit e una rank/select.
   Cioè stiamo andando a *ignorare* il contenuto dei *bucket vuoti* (nessuna chiave in essi).
 ]
 
-#esempio[
+#example[
   Supponiamo di avere $3$ amici ($n=3$) che entrano in un cinema con $5$ posti ($m=5$), numerati da $0$ a $4$.
   L'algoritmo di hash assegna loro i posti in modo sparso per evitare collisioni:
   - i posti assegnati sono: $0, 2, 4$
@@ -586,11 +586,11 @@ L'obiettivo è calcolare il *limite inferiore teorico* per rappresentare una MPH
 
 / Separazione: data una funzione hash minimale perfetta $h : U -> n$, diciamo che $h$ *separa* un insieme $S subset.eq U$ con $|S| = n$ se $h$ è iniettiva su $S$ (ovvero è una MPH per $S$).
 
-  #informalmente[
+  #informally[
     Una funzione $h$ separa un insieme $S$ quando mappa tutti gli elementi di $S$ in bucket diversi, senza collisioni.
   ]
 
-  #nota[
+  #note[
     Procedimento opposto: data una MPH fissata $h : U -> n$, possiamo costruire *tutti* gli insiemi $S$ che $h$ separa:
     - per ogni bucket $k in {0, ..., n-1}$, prendiamo esattamente un elemento da $h^(-1)(k)$ (l'antiimmagine di $k$)
     - otteniamo un insieme $S$ di $n$ elementi che viene separato da $h$
@@ -604,7 +604,7 @@ L'obiettivo è calcolare il *limite inferiore teorico* per rappresentare una MPH
   Questa famiglia $H$ è un *$n$-sistema* se è in grado di gestire *qualsiasi* insieme di $n$ chiavi:
   $ forall S subset.eq U, space |S| = n, quad exists space i in {0, ..., t-1} "tale che" h_i "separa" S $
 
-  #informalmente[
+  #informally[
     Un $n$-sistema è una famiglia di funzioni di hash "universale": per qualunque insieme di $n$ chiavi, almeno una delle funzioni della famiglia lo separa (è iniettiva su di esso).
   ]
 
@@ -613,7 +613,7 @@ Chiamiamo $H_(U)(n)$ la *cardinalità minima* di un $n$-sistema, ovvero quante f
 Il theoretical lower bound per rappresentare una MPH è:
 $ Z_n = log H_(U)(n) $
 
-#nota[
+#note[
   Se abbiamo bisogno di almeno $H_(U)(n)$ funzioni diverse, allora per memorizzare "quale funzione stiamo usando" servono almeno $log H_(U)(n)$ bit.
 ]
 
@@ -628,7 +628,7 @@ $ Z_n = log H_(U)(n) $
   Il numero di insiemi separati da $h$ (quindi senza collisioni) è circa:
   $ v = product_(k=0)^(n-1) |h^(-1)(k)| approx (U/n)^n $
 
-  #nota[
+  #note[
     La controimmagine ci dice quante scelte abbiamo per ogni posizione.
     Per sapere quanti insiemi totali possiamo formare, dobbiamo moltiplicare le possibilità per ogni bucket.
     Ogni contro immagine avra circa dimensione $U/n$ (dipende da come sono distribuite le chiavi tra i vari bucket).
@@ -654,6 +654,6 @@ $
 
 La struttura è *compatta*.
 
-#nota[
+#note[
   Esistono strutture più sofisticate che si avvicinano di più al limite teorico, ma sono significativamente più complesse da implementare e utilizzare.
 ]

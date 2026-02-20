@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Center Selection (Selezione dei centri) [NPOc]
 
-#informalmente[
+#informally[
   Date delle _città_ (insieme di punti), vogliamo costruire dei _centri_, in modo da minimizzare la distanza massima da un punto al proprio _centro più vicino_.
 
   Il numero di centri deve rispettare un certo _budget_ $k$ a disposizione.
@@ -17,7 +17,7 @@ Lo spazio dei punti $Omega$ si dice spazio metrico sse $forall x,y,z in Omega$, 
 2. $d(x,y) = 0 space <==> space x=y$: identità
 3. $d(x,z) + d(z,y) >= d(x,y)$, *disuguaglianza triangolare*, ovvero la distanza percorsa per andare da $x$ a $y$ passando per un punto intermedio $z$ è sicuramente maggiore o uguale rispetto alla via diretta
 
-#esempio[
+#example[
   Lo spazio euclideo $n$-dimensionale $(R^n,d)$ è uno spazio metrico, dove $d$ è la distanza Euclidea:
   $ d(x,y) = sqrt(sum_(i=1)^n (x_i-y_i)^2) $
 
@@ -99,7 +99,7 @@ Possiamo ora definire il problema *Center Selection*:
   caption: [Esempio di selezione dei centri con $k=3$. Ogni centro $c_i$ ha un raggio di copertura $rho = r_i$ che rappresenta la distanza esatta dal centro al punto più lontano nella sua area di copertura.\ L'output di questa istanza del problema è $rho(C) = 1.62$.],
 )
 
-#nota[
+#note[
   Questo problema è strettamente legato al concetto di *partizione di Voronoi*, ovvero una partizione del piano in insiemi disgiunti che fanno riferimento allo *stesso centro*.
   Ogni insieme prende il nome di *cella di Voronoi*.
 
@@ -158,18 +158,18 @@ Possiamo ora definire il problema *Center Selection*:
   )
 ]
 
-#teorema("Teorema")[
+#theorem[
   *$ "CenterSelection" in "NPOc" $*
 ]
 
 == Algoritmo CenterSelectionPlus
 
-#attenzione[
+#warning[
   Per arrivare ad un algoritmo per CenterSelection, andremo a presentare una variante semplificata, ovvero l'algoritmo CenterSelectionPlus.
 
   Questa versione presenta un input in più: $r in bb(R)^+$, il *raggio di copertura*.
 
-  #informalmente[
+  #informally[
     Questo input $r$ è un _suggerimento_ che andremo ad usare per selezionare i centri, ma che non avremo a disposizione nell'algoritmo generale.
   ]
 ]
@@ -189,13 +189,13 @@ Possiamo ora definire il problema *Center Selection*:
   indent([*Output* $C$]),
 )
 
-#nota[
+#note[
   Il comportamento dell'algoritmo è influenzato dalla scelta del *parametro $r$*:
   - se $r$ è *grande*, l'algoritmo produce quasi sicuramente una *soluzione* che rispetta il budget (ad ogni passo cancello tanti punti dato che il raggio è molto grosso)
   - se $r$ è *piccolo*, l'algoritmo trova delle soluzioni migliori (raggio più piccolo) ma che potrebbero *sforare* il budget a disposizione (dato che meno punti verranno coperti), rendendole non ammissibili
 ]
 
-#attenzione[
+#warning[
   L'algoritmo di $"CenterSelectionPlus"$ gode della proprietà di *arbitrarietà*: in alcuni punti può effettuare delle *scelte casuali* (ad esempio non viene specificato come vengono scelti i punti $hat(s)$).
 
   Quando si implementa un algoritmo arbitrario, bisogna prendere delle _decisioni_ in questi punti di arbitrarietà.
@@ -302,14 +302,14 @@ Possiamo ora definire il problema *Center Selection*:
   ],
 )
 
-#teorema("Teorema")[
+#theorem[
   Se l'algoritmo $"CenterSelectionPlus"$ emette un output, esso è una $(2r)/rho^*"-approssimazione"$ per $"CenterSelection"$.
 
-  #nota[
+  #note[
     Se viene emesso un output, allora è sicuramente ammissibile (dato che viene emesso solo se $|C| <= k$).
   ]
 
-  #dimostrazione[
+  #proof[
     Se la soluzione è ammissibile, allora $forall s in S$, $s$ deve essere stato cancellato, quindi esiste un centro $overline(s)$ nel raggio $2r$:
     $ forall s in S, quad exists overline(s) in C quad "t.c." quad d(s,overline(s))<=2r $
     Quindi il raggio di copertura di ogni centro è $<= 2r$:
@@ -318,26 +318,26 @@ Possiamo ora definire il problema *Center Selection*:
       rho(C) / rho^* & <= (2r) / rho^* space qed
     $
 
-    #nota[
+    #note[
       Si può osservare come il tasso di approssimazione *decresce* al decrescere di $r$, tuttavia $r$ non può essere ridotto all'infinito.
     ]
   ]
 ]
 
-#teorema("Teorema")[
+#theorem[
   Se $r >= rho^*$, $"CenterSelectionPlus"$ *emette* sicuramente un output.
 
-  #dimostrazione[
+  #proof[
     Sia $C^*$ una soluzione ottima, ovvero $rho(C^*) = rho^*$, il minor *raggio di copertura* possibile.
     Supponiamo di conoscere il valore di $rho^*$ e di eseguire l'algoritmo $"CenterSelectionPlus"$ con $r >= rho^*$.
 
-    #teorema("Osservazione 1")[
+    #theorem(title: "Osservazione 1")[
       Sia $mb(s')$ un punto che nella soluzione ottima si rivolge allo stesso centro $mg(hat(c)^*)$ a cui si rivolge $mr(overline(s))$.
       Quando viene selezionato $mr(overline(s))$, viene cancellato anche $mb(s')$ _(ovviamente a meno che non fosse già stato cancellato)_.
 
       In altre parole, quando viene selezionato un *qualsiasi* punto che si rivolge allo stesso centro ottimo $mg(hat(c)^*)$, vengono cancellati almeno tutti i punti che appartenevano alla stessa cella di Voronoi di $mg(hat(c)^*)$.
 
-      #dimostrazione[
+      #proof[
         Usando la disuguaglianza triangolare:
         $
           d(mb(s'), mr(overline(s))) <= underbrace(d(mb(s'), mg(hat(c)^*)), <= rho^*) + underbrace(d(mr(overline(s)), mg(hat(c)^*)), <=rho^*) <= 2rho^*
@@ -406,7 +406,7 @@ Comportamento dell'algoritmo $"CenterSelectionPlus"$ al variare di $r$:
 - *$(rho^*)/2 < r < rho^*$*: l'algoritmo potrebbe emettere un'ottima approssimazione, ma potrebbe anche non emettere una soluzione (o meglio, trovarne una non ammissibile)
 - *$r < (rho^*)/2$*: l'algoritmo *non* emette soluzione, altrimenti otterremmo una soluzione migliore dell'ottimo (impossibile): $(2r)/rho^* < (2((rho^*)/2))/rho^* <= 1$
 
-#informalmente[
+#informally[
   Più $r$ è piccolo, migliore sarà l'approssimazione. Se $r$ scende sotto $rho^*$ l'algoritmo potrebbe non emettere soluzione (ma in caso la emetta sarebbe molto buona).
   Se $r$ scende ulteriormente sotto $rho^* / 2$, allora è impossibile che emetta soluzione.
 ]
@@ -430,7 +430,7 @@ Comportamento dell'algoritmo $"CenterSelectionPlus"$ al variare di $r$:
   [*Output* $C$],
 )
 
-#nota[
+#note[
   L'algoritmo appena presentato è *molto simile* a $"CenterSelectionPlus"$.
 
   La differenza principale è che $"Plus"$ cancella i punti nel raggio, $"Greedy"$ no.
@@ -441,10 +441,10 @@ Comportamento dell'algoritmo $"CenterSelectionPlus"$ al variare di $r$:
   - $"Greedy"$: seleziona il prossimo centro come _il più lontano_ dai centri già selezionati
 ]
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   L'esecuzione di $"GreedyCenterSelection"$ è una delle *possibili esecuzioni* di $"CenterSelectionPlus"$, quando $r = rho^*$.
 
-  #dimostrazione[
+  #proof[
     Supponiamo di modificare $"CenterSelectionPlus"$ nel seguente modo:
     #grid(
       columns: (1fr, 1fr),
@@ -512,7 +512,7 @@ Comportamento dell'algoritmo $"CenterSelectionPlus"$ al variare di $r$:
 
     Ma dato che aveamo supposto $overline(s)^'!=overline(s)^''$, questo è un assurdo. La versione 2 (*V2*) dell'algoritmo non è altro che la versione $"Greedy"$, $qed$.
 
-    #informalmente[
+    #informally[
       Abbiamo dimostrato che ogni possibile esecuzione dell'algoritmo $"Greedy"$ è anche una possibile esecuzione di $"Plus"$ (a cui è stata tolta l'arbitrarietà):
       $ "Greedy" subset.eq "Plus" $
       Di conseguenza tutte le proprietà di $"Plus"$ valgono anche per l'algoritmo $"Greedy"$.
@@ -520,37 +520,37 @@ Comportamento dell'algoritmo $"CenterSelectionPlus"$ al variare di $r$:
   ]
 ] <greedy-center-selection-esecuzione-center-selection-plus>
 
-#teorema("Corollario")[
+#theorem(title: "Corollario")[
   *$ "GreedyCenterSelection" in 2"-APX" $*
 ]
 
 === Tecnica della Simulazione
 
-#nota[
-  La dimostrazione appena mostrata (#link-teorema(<greedy-center-selection-esecuzione-center-selection-plus>)) utilizza la *tecnica della simulazione* (o tecnica della *restrizione/rilassamento*), che merita un approfondimento.
+#note[
+  La dimostrazione appena mostrata (#link-theorem(<greedy-center-selection-esecuzione-center-selection-plus>)) utilizza la *tecnica della simulazione* (o tecnica della *restrizione/rilassamento*), che merita un approfondimento.
 ]
 
 Se tra due algoritmi esistono delle tracce di esecuzione (ovvero delle _esecuzioni_) in comune, allora, per quelle tracce valgono le _proprietà_ di entrambi gli algoritmi contemporaneamente.
 
-#attenzione[
+#warning[
   Le proprietà valgono solo per le tracce in comune, non sempre!
 ]
 
 Nel caso in cui tutte le possibili esecuzioni di un algoritmo $A$ siano anche possibili tracce di $A'$, allora tutte le proprietà di $A'$ valgono anche per $A$.
 Questo è il caso della dimostrazione precedente, dove $"Greedy" subset.eq "Plus"$.
 
-#informalmente[
+#informally[
   Quasi sempre si dimostra che un algoritmo che compie scelte deterministiche sia una possibile esecuzione (una _sola_ traccia per input) di un algoritmo con scelte arbitrarie (_molteplici_ tracce per input). Ancora, esattamente come il caso precedente.
 ]
 
 == Dominating Set [NPc] <dominating-set>
 
-#nota[
-  Per dimostrare il teorema #link-teorema(<teorema-inapprossimabilita-centerselection>),
+#note[
+  Per dimostrare il teorema #link-theorem(<teorema-inapprossimabilita-centerselection>),
   abbiamo bisogno di introdurre il problema di decisone *Dominating Set*.
 ]
 
-#informalmente[
+#informally[
   Ogni vertice del grafo deve essere _dominato_, ovvero _adiacente_ ad un vertice selezionato.
   Se riusciamo a dominare il grafo selezionando un numero di vertici $<= k$ (budget), allora il problema risponde "si".
 ]
@@ -636,18 +636,18 @@ $ quad forall x in V, space mr(x in D) space or space mb(exists (x, d) in E\, d 
   ],
 )
 
-#teorema("Teorema")[
+#theorem[
   *$ "DominatingSet" in "NPc" $*
 ] <dominating-set-npc>
 
 == Inapprosimabilità di Center Selection
 
-#teorema("Teorema")[
+#theorem[
   Se $P != "NP"$, per *nessun* $alpha<2$ esiste un algoritmo polinomiale che $alpha$-approssima Center Selection.
 
   Di conseguenza, l'algoritmo $"GreedyCenterSelection"$ mostrato in precedenza fornisce l'approssimazione migliore possibile.
 
-  #dimostrazione[
+  #proof[
     Per dimostrarlo ci ricondurremo a #link-section(<dominating-set>).
 
     Per *assurdo* supponiamo che esista un algoritmo $A$ per $"CenterSelection"$ che in tempo polinomiale fornisca una $alpha$-approssimazione, con $alpha < 2$.
@@ -809,9 +809,9 @@ $ quad forall x in V, space mr(x in D) space or space mb(exists (x, d) in E\, d 
     Quindi ci basta eseguire l'algoritmo $A$ che ($alpha < 2$)-approssima Center Selection per ottenere un $rho(C)$.
     *Osservando* questo $rho(C)$ possiamo capire in quale *intervallo è compreso* e quindi capire se $C$ è un dominating set o meno, *decidendo* il problema in tempo polinomiale.
 
-    Ma questa cosa *è assurda* dato che *$"Dominating" in "NPc"$* (#link-teorema(<dominating-set-npc>)), $qed$.
+    Ma questa cosa *è assurda* dato che *$"Dominating" in "NPc"$* (#link-theorem(<dominating-set-npc>)), $qed$.
 
-    #attenzione[
+    #warning[
       Questi due casi sono disgiunti dato che $alpha < 2$ per ipotesi.
       In caso $alpha >= 2$, i due intervalli si sovrappongono, rendendo impossibile intuire la soluzione ottima $rho^*$.
     ]

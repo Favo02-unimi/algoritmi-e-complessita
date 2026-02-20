@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Set Cover [NPOc] <problema-set-cover>
 
-#informalmente[
+#informally[
   Esiste un universo di $n$ _punti_.
   Questi punti sono coperti da $m$ _aree_, ognuna avente un _costo_.
   Le aree possono sovrapporsi (non sono una partizione).
@@ -19,7 +19,7 @@ Formalmente:
   $ w = sum_(i in I) w_i $
 - *$t_Pi$*$= min$
 
-#esempio[
+#example[
   Esempio con $n=6$ punti e $m=4$ aree:
   - $Omega = {s_1, s_2, s_3, s_4, s_5, s_6}$
   - $S_1 = {s_1, s_2, s_4}$ con costo $w_1 = 3$
@@ -65,13 +65,13 @@ Formalmente:
   La soluzione ottima è $I^* = {1, 2}$ con costo $w^* = 3 + 4 = 7$.
 ]
 
-#teorema("Teorema")[
+#theorem[
   *$ "SetCover" in "NPOc" $*
 ]
 
 == Funzione Armonica
 
-#nota[
+#note[
   Per mostrare alcune proprietà di Set Cover, abbiamo bisogno di introdurre la funzione armonica.
 ]
 
@@ -156,11 +156,11 @@ $ H(n) = sum_(i=1)^n 1/i $
   caption: [Rappresentazione grafica della funzione armonica, somma dell'area dei rettangoli arancioni e rossi sotto la curva],
 )
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   La funzione armonica è superiormente limitata da $1 +$ il logaritmo naturale di $n$:
   $ H(n) <= 1 + ln n $
 
-  #dimostrazione[
+  #proof[
     $
       H(n) & <= 1 + integral_1^n 1/x "dx" \
            & <= 1 + [ ln x ]_1^n \
@@ -168,7 +168,7 @@ $ H(n) = sum_(i=1)^n 1/i $
            & <= 1 + ln n space qed
     $
 
-    #informalmente[
+    #informally[
       L'integrale di $1/x$ è l'area sotto la curva blu, a partire da 1.
       Questa area è ovviamente superiore alle aree dei rettangoli arancioni (dato che manca la parte colorata di blu).
 
@@ -177,11 +177,11 @@ $ H(n) = sum_(i=1)^n 1/i $
   ]
 ]
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   La funzione armonica è inferiormente limitata dal logaritmo naturale di $n+1$:
   $ ln(n+1) <= H(n) $
 
-  #dimostrazione[
+  #proof[
     $
       underbrace(integral_t^(t+1) 1/t "dt" = 1/t, "area del rettangolo verde") quad &>= quad underbrace(integral_t^(t+1) 1/x "dx", "area sotto la curva blu") \
       underbrace(H(n) = 1/1 + 1/2 + ... 1/n, "rettangoli") quad &>= quad underbrace(integral_1^2 1/x "dx" + integral_2^3 1/x "dx" + ... integral_n^(n+1) 1/x "dx", "curve") \
@@ -189,7 +189,7 @@ $ H(n) = sum_(i=1)^n 1/i $
       H(n) quad &>= quad ln (n+1) space qed
     $
 
-    #informalmente[
+    #informally[
       Fissando la variabile di integrazione $t$, allora stiamo calcolando l'area di un rettangolo, nello specifico dei rettangoli tratteggiati verdi.
 
       Dato che l'estremo è quello sinistro e che la funzione decresce, allora il rettangolo (tratteggiato verde) sarà più grande della curva (blu) sottostante.
@@ -197,7 +197,7 @@ $ H(n) = sum_(i=1)^n 1/i $
   ]
 ]
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   Mettendo insieme le due proprietà, la funzione armonica è racchiusa:
   $ ln(n+1) <= H(n) <= 1+ln(n) $
 ]
@@ -221,33 +221,33 @@ Questo valore è definito *solo all'istante* in cui il punto sta *venendo copert
 Per ogni punto $s$, definiamo il suo prezzo $c_s$ come il rapporto tra il _costo_ di un'area e il numero di punti non ancora coperti dell'area:
 $ forall s in S_i inter R, quad c_s = w_i / (|S_i inter R|) $
 
-#attenzione[
+#warning[
   Differenziamo:
   - *costo*: costo pagato per selezionare un'area, non varia durante l'esecuzione
   - *prezzo*: rapporto tra il _costo_ di un'area e il numero di punti non ancora coperti dell'area, cambia durante l'esecuzione (dato che il numero di punti non coperti di una certa area potrebbe diminuire) ed è definito solo nell'istante in cui un punto sta venendo coperto
 ]
 
-#nota[
+#note[
   L'algoritmo utilizza il prezzo su un'_area_, mentre lo abbiamo definito su un _punto_.
   Ma *tutti* i punti di una certa area, allo stesso istante, hanno lo *stesso prezzo*, di conseguenza minimizzare il rapporto per un'area o per un punto è equivalente.
 ]
 
-#teorema("Teorema")[
+#theorem[
   Il costo totale pagato $w$, è uguale alla somma dei prezzi di tutti i punti.
   $ w = sum_(s in Omega) c_s $
 
-  #nota[
+  #note[
     Ricordiamo che il prezzo di un punto è definito solo nell'_istante_ in cui viene coperto da un'area, quindi il valore di $c_s$ non è ambiguo.
   ]
 
-  #dimostrazione[
+  #proof[
     Il costo totale pagato è, per definizione, la somma delle aree selezionate:
     $ w = sum_(i in I) mr(w_i) $
 
     Ma il costo di ogni area non è altro che la somma dei prezzi dei punti contenuti:
     $ = sum_mb(i in I) mr(sum_mb(s in S_i inter R) c_s) $
 
-    #esempio[
+    #example[
       Se un'area $S$ costa $10$ e ha $5$ punti (non ancora coperti), allora il prezzo di ogni punto sarà $c_s = 10 / 5 = 2$. Sommandolo per ogni punto $limits(sum)_(s in S) c_s = 5 dot 2 = 10$.
 
       Nel caso in cui la stessa area avesse un punto già coperto (quindi $|S inter R| = 4$), allora funzionerebbe lo stesso:
@@ -259,16 +259,16 @@ $ forall s in S_i inter R, quad c_s = w_i / (|S_i inter R|) $
   ]
 ] <teorema-somma-costi-totale-pagato>
 
-#teorema("Teorema")[
+#theorem[
   Per ogni area, la somma dei prezzi dei punti contenuti (nell'istante in cui sono stati coperti) è limitata superiormente dalla funzione armonica:
 
   $ forall k in m, quad sum_(s in S_k) c_s <= H(|S_k|) dot w_k $
 
-  #attenzione[
+  #warning[
     Dato che i prezzi dei punti contenuti cambiano durante l'esecuzione, i vari punti potrebbero avere prezzi diversi quando sono stati coperti.
   ]
 
-  #dimostrazione[
+  #proof[
     Senza perdita di generalità (vale per ogni $k$), scegliamo un $k in m$.
 
     L'area $mb(S_k)$ ha cardinalità $d$ ed è composta dai punti:
@@ -294,7 +294,7 @@ $ forall s in S_i inter R, quad c_s = w_i / (|S_i inter R|) $
 
     Il numero di punti dell'area ancora da coprire è quindi almeno il numero di punti da $s_j$ in poi:
     $ |S_k inter R| >= d-j+1 $ <set-cover-punti-da-coprire-sj>
-    #nota[
+    #note[
       Non è $=$ ma è $>=$ dato che potrebbero esserci dei punti prima di $j$ appartenenti allo stesso _gruppo_, che vengono coperti allo stesso istante di $s_j$.
     ]
 
@@ -316,13 +316,13 @@ $ forall s in S_i inter R, quad c_s = w_i / (|S_i inter R|) $
   ]
 ] <teorema-somma-prezzi-funzione-armonica>
 
-#teorema("Teorema")[
+#theorem[
   L'algoritmo $"PricingSetCover"$ è una *$H(M)$-approssimazione*, dove $M$ è la cardinalità massima di un'area, $M = limits(max)_k |S_k|$.
 
-  #dimostrazione[
-    Riscrivendo il #link-teorema(<teorema-somma-prezzi-funzione-armonica>):
+  #proof[
+    Riscrivendo il #link-theorem(<teorema-somma-prezzi-funzione-armonica>):
     $
-      forall k, quad w_k dot H(|S_k|) & underbrace(>=, #link-teorema(<teorema-somma-prezzi-funzione-armonica>)) sum_(s in S_k) c_s \
+      forall k, quad w_k dot H(|S_k|) & underbrace(>=, #link-theorem(<teorema-somma-prezzi-funzione-armonica>)) sum_(s in S_k) c_s \
       w_k & >= (limits(sum)_(s in S_k) c_s) / H(|S_k|)
     $
     Dato che $M$ è definito come il massimo di tutte le cardinalità, allora:
@@ -342,7 +342,7 @@ $ forall s in S_i inter R, quad c_s = w_i / (|S_i inter R|) $
     Quindi è grande almeno quanto lo scorrere tutti i punti dell'universo almeno una volta $s in Omega$:
 
     $
-      mb(sum_(i in I^*) sum_(s in S_i) c_s) >= sum_(s in Omega) c_s underbrace(=, #link-teorema(<teorema-somma-costi-totale-pagato>)) mb(w)
+      mb(sum_(i in I^*) sum_(s in S_i) c_s) >= sum_(s in Omega) c_s underbrace(=, #link-theorem(<teorema-somma-costi-totale-pagato>)) mb(w)
     $ <set-cover-hm-approssimazione-oss-b>
 
     Mettendo tutto insieme:
@@ -363,10 +363,10 @@ $ forall s in S_i inter R, quad c_s = w_i / (|S_i inter R|) $
   ]
 ]
 
-#teorema("Corollario")[
+#theorem(title: "Corollario")[
   Asintoticamente, $"PricingSetCover"$ è una $O(ln n)$-approssimazione.
 
-  #dimostrazione[
+  #proof[
     Ricordiamo che $M = limits(max)_k |S_k|, quad n = |Omega|, quad H(n) approx ln(n)$.
 
     La cardinalità massima di un'area è, ovviamente, minore o uguale alla cardinalità dell'universo, $M <= n$:
@@ -447,10 +447,10 @@ $ w^* = 2 + 2 epsilon $
 con rapporto di approssimazione:
 $ w/w^* = (log n) / (2 + 2 epsilon) = Omega(log n) space qed $
 
-#teorema("Teorema")[
+#theorem[
   *$ "SetCover" in log"-APX" $*
 ]
 
-#teorema("Teorema")[
+#theorem[
   *$ "Se P" != "NP", quad "SetCover" in.not "APX" $*
 ]

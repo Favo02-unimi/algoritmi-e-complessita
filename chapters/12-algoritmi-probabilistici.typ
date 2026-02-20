@@ -1,4 +1,4 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Algoritmi Probabilistici
 
@@ -16,17 +16,17 @@ La macchina di per sé rimane deterministica, il non determinismo è dato dalla 
 La macchina $A$ modella, dunque, una *distribuzione di probabilità* sui possibili *output*, ovvero quanto è probabile ricevere un output $y$ dato un input $x$:
 $ P_A (y | x) $
 
-#informalmente[
+#informally[
   Il comportamento della macchina non dipende più solamente dall'input, ma anche dal valore dei bit casuali letti.
   Dato che questa sorgente è aleatoria, diverse esecuzioni con lo stesso input $x$ potrebbero portare a diversi output $y$.
 ]
 
-#nota[
+#note[
   Le sorgenti di bit aleatori non esistono davvero nella pratica.
 
   Innanzitutto bisogna definire cosa significa casuale: conoscendo perfettamente il contesto, allora è sempre possibile determinare con certezza il risultato.
 
-  #esempio[
+  #example[
     Conoscendo il peso della moneta, la densità dell'aria, il vento e la forza applicata al lancio, anche il lancio di una moneta è deterministico in linea di principio, basta fare perfettamente i calcoli della traiettoria.
   ]
 

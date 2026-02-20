@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Travelling Salesman (Commesso Viaggiatore) Metrico (TSP Metrico)
 
-#nota[
+#note[
   Si rimanda alla sezione #link-section(<grafi>) per le definizioni necessarie (clique, cammino/circuito Hamiltoniano/Euleriano).
 ]
 
@@ -17,7 +17,7 @@ Formalmente:
   $ delta = sum_(e in pi) delta_e $
 - *$t_Pi$*$= min$
 
-#teorema("Teorema")[
+#theorem[
   *$ "TSP" in "NPOc" $*
 ]
 
@@ -27,10 +27,10 @@ Vedremo una versione del problema che lavora in uno spazio metrico, aggiungendo 
 + $G$ è una *clique*
 + $delta_e$ è una *metrica*, cioè vale la disuguaglianza triangolare $delta_{x,y} + delta_{y,z} >= delta_{x,z}$
 
-#attenzione[
+#warning[
   Senza la seconda limitazione, sarebbe possibile trasformare qualsiasi grafo in una cricca: basterebbe aggiungere tutti i lati mancanti con un costo enorme, in modo che non vengano mai scelti dall'algoritmo.
 
-  #esempio[
+  #example[
     #figure(
       cetz.canvas({
         import cetz.draw: *
@@ -76,7 +76,7 @@ Vedremo una versione del problema che lavora in uno spazio metrico, aggiungendo 
   L'algoritmo non li sceglierà mai, in quanto vuole trovare il circuito minimo. Se l'algoritmo scegliesse dei lati fittizi nella soluzione prodotta, allora il grafo di partenza non conteneva un circuito Hamiltoniano.
 ]
 
-#teorema("Teorema")[
+#theorem[
   *$ "TSP Metrico" in "NPOc" $*
 ]
 
@@ -101,16 +101,16 @@ L'algoritmo sfrutta le seguenti componenti:
 
 - *Handshaking Lemma*#super[2]: <tsp-handshaking-lemma>
 
-  #informalmente[
+  #informally[
     Se un gruppo di persone si stringono tra di loro (in maniera arbitraria) la mano, il numero di persone che ha stretto un numero dispari di mani è pari.
 
     Le persone sono rappresentate come i vertici e le strette di mano come i lati di un grafo.
   ]
 
-  #teorema("Lemma")[
+  #theorem(title: "Lemma")[
     In ogni grafo non orientato, il numero di vertici di grado dispari è pari.
 
-    #dimostrazione[
+    #proof[
       Dato un grafo $G=(V,E)$:
       $ sum_(x in V) d(x) & = 2m $
       dove $d(x), x in V$ è il grado di un vertice e $m$ è il numero di lati del grafo.
@@ -123,7 +123,7 @@ L'algoritmo sfrutta le seguenti componenti:
     ]
   ]
 
-  #nota[
+  #note[
     Questo genere di risultati, ovvero inferire dei risultati (come pattern che si ripetono) partendo solo da una struttura di una determinata dimensione viene chiamata #link("https://en.wikipedia.org/wiki/Ramsey_theory")[*Teoria di Ramsey*].
   ]
 
@@ -134,11 +134,11 @@ L'algoritmo sfrutta le seguenti componenti:
 
 - *Esistenza Circuito Euleriano su $M union T$*#super[4]: <tsp-esistenza-circuito-euleriano>
 
-  #teorema("Teorema")[
+  #theorem[
     Un multigrafo ammette un circuito Euleriano se e solo se è connesso e tutti i suoi vertici hanno grado *pari*.
 
-    #dimostrazione[
-      #attenzione[
+    #proof[
+      #warning[
         Questa non è una _dimostrazione_, ma solo una _costruzione_ del senso $<==$ dell'implicazione, ovvero come costruire un circuito Euleriano dato un multigrafo connesso con tutti i vertici di grado pari.
       ]
 
@@ -196,14 +196,14 @@ L'algoritmo sfrutta le seguenti componenti:
   Questo multigrafo ha tutti i vertici di grado *pari*:
   - tutti i vertici $in T \\ M$ avevano già grado pari (altrimenti sarebbero $in D$ e quindi nel matching $M$)
   - tutti i vertici $in T inter M$ avevano grado dispari in $T$, a cui è stato aggiunto un lato dal matching $M$ (per sposarli), rendendoli pari
-  Quindi, per #link-teorema(<tsp-metrico-teorema-circuito-euleriano-grado-pari>), esiste un circuito Euleriano sul multigrafo $M union T$.
+  Quindi, per #link-theorem(<tsp-metrico-teorema-circuito-euleriano-grado-pari>), esiste un circuito Euleriano sul multigrafo $M union T$.
 
 - *Cortocircuitazione*#super[5]: <tsp-cortocircuitazione>
-  un circuito Euleriano passa una sola volta da tutti i lati, ma potrebbe passare più volte da alcuni vertici (come ad esempio mostrato nella dimostrazione di #link-teorema(<tsp-metrico-teorema-circuito-euleriano-grado-pari>)).
+  un circuito Euleriano passa una sola volta da tutti i lati, ma potrebbe passare più volte da alcuni vertici (come ad esempio mostrato nella dimostrazione di #link-theorem(<tsp-metrico-teorema-circuito-euleriano-grado-pari>)).
   Per ottenere un circuito Hamiltoniano possiamo sfruttare la cortocircuitazione, ovvero saltare direttamente al vertice successivo a quello già incontrato.
   Questa cosa è possibile perché il grafo è una *clique* e perché vale la *disuguaglianza triangolare* (migliorando quindi il peso finale).
 
-  #esempio([
+  #example([
     #figure(
       cetz.canvas({
         import cetz.draw: *
@@ -263,11 +263,11 @@ L'algoritmo sfrutta le seguenti componenti:
 
 === Analisi dell'approssimazione
 
-#teorema("Lemma")[
+#theorem(title: "Lemma")[
   Sia $T$ uno spanning tree minimo per un grafo, il suo peso (somma del peso dei lati selezionati) è minore o uguale della soluzione ottima $delta^*$ (lunghezza del circuito Hamiltoniano più corto):
   $ delta(T) <= delta^* $
 
-  #dimostrazione[
+  #proof[
     Sia $pi^*$ un circuito Hamiltoniano ottimo per TSP.
 
     Togliendo un lato da $pi^*$, otteniamo un grafo aciclico che copre tutti i vertici, ovvero uno spanning tree $T'$.
@@ -279,7 +279,7 @@ L'algoritmo sfrutta le seguenti componenti:
   ]
 ] <tsp-lemma-1-spanning>
 
-#teorema("Lemma")[
+#theorem(title: "Lemma")[
   Dati:
   - $T$: minimum spannig tree su un grafo $G$
   - $D$: insieme dei vertici di grado dispari di $T$
@@ -288,7 +288,7 @@ L'algoritmo sfrutta le seguenti componenti:
   Allora il peso del matching $M$ dei vertici di grado dispari è al massimo la metà della soluzione ottima $delta^*$:
   $ delta(M) <= 1/2 delta^* $
 
-  #dimostrazione[
+  #proof[
     Prendiamo il circuito Hamiltoniano ottimo $pi^*$, questo circuito passa per forza da tutti i vertici di $D$.
     Possiamo cortocircuitare tutti questi vertici e ottenere un circuito $mb(overline(pi)^*)$. Questo circuito tocca tutti i vertici (neri) che vogliamo far sposare nel matching $M$.
 
@@ -350,7 +350,7 @@ L'algoritmo sfrutta le seguenti componenti:
         Il circuito Hamiltoniano principale (nero) collega tutti i vertici,
         mentre il circuito $mb("blu")$ collega i vertici di grado dispari in $T$ (riempiti di nero).
 
-        #nota[
+        #note[
           Il grafo disegnato è semplificato, ovviamente i vertici neri hanno ulteriori archi incidenti, che li rendono di grado dispari sull'albero (non disegnato).
         ]
       ],
@@ -453,16 +453,16 @@ L'algoritmo sfrutta le seguenti componenti:
   ]
 ] <tsp-lemma-2-multigrafo>
 
-#teorema("Teorema")[
+#theorem[
   L'algoritmo di Christofides è una *$3/2$-approssimazione* per il TSP metrico.
 
-  #dimostrazione[
-    Il multigrafo $T union M$ contiene un circuito Euleriano $pi_"Euler"$ (per  #link-teorema(<tsp-metrico-teorema-circuito-euleriano-grado-pari>)).
+  #proof[
+    Il multigrafo $T union M$ contiene un circuito Euleriano $pi_"Euler"$ (per  #link-theorem(<tsp-metrico-teorema-circuito-euleriano-grado-pari>)).
     È possibile cortocircuitarlo per ottenere un circuito Hamiltoniano $pi$ (che è più corto di $pi_"Euler"$):
     $
       delta(pi) quad & <= quad delta(pi_"Euler") \
       delta(pi) quad & <= quad delta(T) + delta(M) \
-      delta(pi) quad & <= quad underbrace(delta^*, #link-teorema(<tsp-lemma-1-spanning>)) + underbrace(1/2 delta^*, #link-teorema(<tsp-lemma-2-multigrafo>)) \
+      delta(pi) quad & <= quad underbrace(delta^*, #link-theorem(<tsp-lemma-1-spanning>)) + underbrace(1/2 delta^*, #link-theorem(<tsp-lemma-2-multigrafo>)) \
       delta(pi) quad &<= quad 3/2 delta^* space qed
     $
   ]
@@ -674,20 +674,20 @@ $
 
 Per un $n$ abbastanza grande $n-> infinity$ e per un $epsilon$ abbastanza piccolo $epsilon -> 0$, il rapporto $delta/delta^*$ tende a $3/2$.
 
-#teorema("Teorema")[
+#theorem[
   *$3/2$* è il miglior tasso di approssimazione noto per *TSP metrico*.
 ]
 
 == Inapprossimabilità di TSP
 
-#teorema("Teorema")[
+#theorem[
   Non esiste nessun $alpha > 1$ tale che TSP sia $alpha$-approssimabile (nemmeno sulle clique).
 
-  #attenzione[
+  #warning[
     Valido per il TSP *non* metrico.
   ]
 
-  #dimostrazione[
+  #proof[
     Determinare se un *grafo* ha un *circuito Hamiltoniano* è *$"NPc"$*.
 
     Supponiamo per assurdo che esista un algoritmo che $alpha$-approssima (per qualche $alpha > 1$) TSP sulle clique.
@@ -727,7 +727,7 @@ Per un $n$ abbastanza grande $n-> infinity$ e per un $epsilon$ abbastanza piccol
 
     Questa cosa è assurda, dato che il problema di decisione è NPc, quindi non può esistere un algoritmo di approssimazione, $qed$.
 
-    #informalmente[
+    #informally[
       Abbiamo costruito un problema di ottimizzazione partendo da quello di decisione, in modo che l'approssimazione cada in uno di due intervalli *disgiunti* che ci permettono di capire qual era l'ottimo.
     ]
   ]

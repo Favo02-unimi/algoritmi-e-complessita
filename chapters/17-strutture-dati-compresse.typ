@@ -1,4 +1,4 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Strutture dati
 
@@ -6,7 +6,7 @@ La nozione di "struttura dati" può essere divisa in due concetti:
 - *ADT (abstract data type)*: astrazione del tipo di dato, specifica i valori esprimibili e le primitive per accedere alla struttura dati
 - *Implementazione*: implementazione di un ADT
 
-#attenzione[
+#warning[
   Quando si parla di struttura dati, si dovrebbe parlare solo di ADT, non dell'implementazione.
   Noi cercheremo di tenere separati i due concetti.
 ]
@@ -18,11 +18,11 @@ Specificazione astratta di un tipo di dati, in termini di comportamento esterno:
 - primitive per accedere e modellare i dati
 - vincoli (assiomi) che valgono sempre: se sono completi (e lo strumento lo permette), è possibile generare un'implementazione a partire da questi assiomi.
 
-#attenzione[
+#warning[
   Non viene in alcun modo specificato come viene implementata la struttura dati.
 ]
 
-#esempio[
+#example[
   Supponiamo di voler definire una struttura stack per un tipo di dati `T`.
 
   ```java
@@ -33,7 +33,7 @@ Specificazione astratta di un tipo di dati, in termini di comportamento esterno:
   boolean isEmpty()
   ```
 
-  #nota[
+  #note[
     La maggior parte dei linguaggi non sono propriamente indicati per esprimere degli ADT, dato che _"strizzano l'occhio all'implementazione"_ e/o non permettono di esprimere particolari vincoli.
 
     Ad esempio, in Java, non è possibile definire costruttori nelle interfacce.
@@ -53,12 +53,12 @@ Specificazione astratta di un tipo di dati, in termini di comportamento esterno:
 
 Un dato ADT si può implementare in modi diversi, ognuno con diversi *tradeoff* (in termini di tempo, di spazio, di semplicità).
 
-#esempio[
+#example[
   In Java, l'ADT lista (interfaccia `List`) è implementato da diverse classi con diverse performance:
   - `LinkedList`: accesso random $O(n)$, append $O(1)$
   - `ArrayList`: accesso random $O(1)$, append $O(1) "ammortizzato"$
 
-  #nota[
+  #note[
     Per questo motivo, non si documentano i metodi di un'implementazione (dato che si ereditano dall'interfaccia), ma è importante aggiungere commenti sull'efficienza di questa implementazione.
   ]
 ]
@@ -68,7 +68,7 @@ Un dato ADT si può implementare in modi diversi, ognuno con diversi *tradeoff* 
 Chiamiamo con $n$ la *taglia* di un ADT, ovvero il numero di elementi della struttura.
 Per ogni taglia $n$, L'ADT avrà un certo numero di *valori possibili* $v_n$ di quella taglia.
 
-#esempio[
+#example[
   Stack di taglia $0$ contiene un solo elemento, lo stack vuoto, quindi $v_0 = 1$.
 
   Le altre taglie dipendono dal tipo di dato associato al generico $T$, ad esempio in uno stack di booleani, $v_1 = 2$, $v_5 = 2^5$.
@@ -81,16 +81,16 @@ Indichiamo con $b_i$ il numero di bit occupati da un valore $V_i$.
 
 === Teorema di Shannon
 
-#teorema("Teorema")[
+#theorem[
   Il teorema di Shannon fornisce un *lower bound* al numero medio di bit per rappresentare una struttura di taglia $n$ con $v_n$ valori possibili:
   $ Z_n quad = quad (limits(sum)_(i = 1)^(v_n) b_i) / (v_n) >= log_2(v_n) $
 
-  #informalmente[
+  #informally[
     Per poter rappresentare tutti i valori distinti, ciascun valore deve avere una codifica unica.
     Se due valori condividessero la stessa rappresentazione, risulterebbero indistinguibili.
   ]
 
-  #esempio[
+  #example[
     Sia $n = 3$ la taglia della struttura dati:
     - numero di stati possibili è $v_3 = 9$
     Se per ognuno di questi valori utilizzassimo $b = 2$ bit per rappresentarli, potremmo avere al massimo $2^2 = 4$ stati distinti. Altrimenti, per il principio della piccionaia, due stati avrebbero la stessa rappresentazione.
@@ -98,11 +98,11 @@ Indichiamo con $b_i$ il numero di bit occupati da un valore $V_i$.
     Per rappresentare $9$ valori diversi, servono almeno $log_2(9) approx 3.17$, quindi almeno $4$ bit per ogni elemento.
   ]
 
-  #attenzione[
+  #warning[
     Il teorema funziona anche per strutture dati di *dimensione variabile*.
     Questo significa che se la media dei bit necessari per ogni elemento deve essere superiore al logaritmo, allora se riusciamo a risparmiare su alcuni valori, dovremmo per forza pagare di più su altri valori.
 
-    #esempio[
+    #example[
       È impossibile creare una struttura dati in grado di comprimere in maniera ottima qualsiasi valore dell'universo dei valori.
       Esistono solo algoritmi che comprimono bene *qualcosa*, non tutto.
 
@@ -110,7 +110,7 @@ Indichiamo con $b_i$ il numero di bit occupati da un valore $V_i$.
     ]
   ]
 
-  #nota[
+  #note[
     Per ogni tipologia di struttura dati esiste la rispettiva versione compressa che occupa $log_2(v_n)$ bit, *ottima* in termini di spazio.
     Tuttavia non è detto che questa versione sia abbastanza *efficiente* dal punto di vista computazionale per essere utilizzabile in pratica.
   ]
@@ -127,12 +127,12 @@ In particolare, l'implementazione si dice:
 
 Pur rimanendo *efficiente* quanto l'implementazione naive in termini di tempo di accesso.
 
-#attenzione[
+#warning[
   È semplice ottenere implementazioni molto compatte a scapito dei tempi di accesso.
   Per questo motivo imponiamo che le prestazioni di accesso rimangano confrontabili con quelle di un'implementazione naive.
 ]
 
-#nota[
+#note[
   Le implementazioni naive (o "standard") solitamente non rientrano in queste classificazioni: occupano molto spazio (dato che nei PC moderni la memoria raramente è un problema).
 ]
 
@@ -145,7 +145,7 @@ Le implementazioni naive non starebbero nemmeno in memoria (spesso neanche sul d
 
 Un ulteriore obiettivo delle strutture compresse è quello di sfruttare al meglio la cache, dato che occupando meno spazio è possibile cachare più cose.
 
-#attenzione[
+#warning[
   _Strutture dati compresse_ e _Metodi di compressione dei dati_ (zip, tar, codifiche audio/video) sono tecniche *molto diverse*:
   - Molte codifiche per audio/video sono *lossy* (ovvero possono perdere informazione), quindi possono non rispettare il teorema di Shannon.
 

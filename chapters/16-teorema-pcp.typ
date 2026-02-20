@@ -1,4 +1,4 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Teorema PCP (picipi) (Probabilistic Checkable Proofs)
 
@@ -9,7 +9,7 @@ Utilizzeremo il teorema PCP per dimostrare delle proprietà di *inapprossimabili
 Per introdurre il teorema PCP, dobbiamo introdurre un nuovo modello di calcolo, ovvero le Macchine di Turing con oracolo.
 Oltre all'input $x in 2^*$, accedono ad una *stringa oracolica* $w in 2^*$.
 
-#informalmente[
+#informally[
   - $x$ è un'istanza di un problema
   - $w$ è una soluzione/dimostrazione del problema
   - $M$ deve verificare se la soluzione $w$ è valida per il problema $x$
@@ -59,14 +59,14 @@ L'output finale dipende sia dall'*input* $x$ che dalla *stringa oracolica* $w$.
   ],
 )
 
-#teorema("Teorema")[
+#theorem[
   Un linguaggio binario $L subset.eq 2^*$ sta in $"NP"$ se e solo se esiste una Macchina di Turing con oracolo $V$ (*verificatore*) tale che:
   + $V(x,w)$ risponde in tempo polinomiale in $|x|$
   + Se $x in L$ esiste una stringa oracolica $w$ che fa accettare $x$.\
     Se $x in.not L$ *non* esiste alcuna stringa oracolica che fa accettare $x$.
     $ forall x in 2^*, space (exists w in 2^* "t.c." V(x,w)="YES") <==> (x in L) $
 
-  #informalmente[
+  #informally[
     È possibile vedere una stringa oracolica $w$ come un *ramo* dell'albero.
     Se l'input $x$ appartiene al linguaggio, allora ci deve essere almeno un ramo che risponde "YES", altrimenti tutti i rami devono restituire "NO".
   ]
@@ -77,7 +77,7 @@ L'output finale dipende sia dall'*input* $x$ che dalla *stringa oracolica* $w$.
 Estensione delle Macchine di Turing con Oracolo.
 Oltre all'oracolo questo modello di calcolo presenta anche una sorgente di bit *casuali* $r in 2^*$.
 
-#informalmente[
+#informally[
   - $x$ è un'istanza di un problema
   - $r$ sono dei bit casuali
   - $w$ è una soluzione/dimostrazione del problema
@@ -88,7 +88,7 @@ Oltre all'oracolo questo modello di calcolo presenta anche una sorgente di bit *
   - se $x$ è *corretta* esiste almeno una stringa $w$ che convince al 100% $M$ a *prescindere* da quali bit $r$ vengono selezionati
   - se $x$ *NON è corretta*, allora per qualsiasi $w$ e qualsiasi bit $r$, è *improbabile* che venga accettata ($P <= 1/2$)
 
-  #attenzione[
+  #warning[
     $r$ non stabilisce direttamente quali posizioni di $w$ interrogare, ma sceglie quale "test" effettuare.
     Dopo aver estratto $r$, il verificatore diventa deterministico, ovvero viene navigato l'albero come in precedenza.
   ]
@@ -104,7 +104,7 @@ $
   P[V(x,w) = "YES"] quad & = quad (|{r "t.c." V(x,w,r) = "YES"}|)/ 2^(|r|)
 $
 
-#nota[
+#note[
   La funzione $mu$ calcola la probabilità che un elemento cada all'interno dell'insieme passato, rispetto all'universo degli oggetti di quell'insieme:
   $ mu(A) = (|A|)/(|"elementi possibili"|) $
   Ad esempio, prendendo come esempio un dado:
@@ -152,7 +152,7 @@ L'output della macchina $V$ dipende dall'input $x$, dalla stringa oracolica $w$ 
 
 == Classe PCP
 
-#informalmente[
+#informally[
   Utilizziamo un verificatore probabilistico, con due parametri $r$ e $q$, che limitano il numero di *query* (quanto a fondo possiamo ispezionare $w$) e il numero di *estrazioni* casuali (che useremo per scegliere dove ispezionare $w$).
 ]
 
@@ -170,30 +170,30 @@ La classe $"PCP"[r,q] subset.eq 2^(2^*)$ è la classe dei linguaggi $L subset.eq
     )
   $
 
-  #attenzione[
+  #warning[
     Se $x in L$, deve esistere una stringa oracolica $w in 2^*$ tale che il verificatore accetti sempre, *indipendentemente* dalla stringa random $r$ estratta.
   ]
 
-#nota[
+#note[
   I verificato introdotti fin'ora sono *adattivi*, ovvero le query che effettuano dipendono dai risultati delle query precedenti.
 
   Le query effettuate da un nodo dell'albero, dipendono dal ramo percorso fin'ora.
   I nodi, anche allo stesso livello, sono diversi.
 ]
 
-#teorema("Teorema")[
+#theorem[
   L'oracolo e la sorgente di bit random sono *inutilizzabili*.
   L'output dipende solo dall'input, se $x in L$ viene accettato dal verificatore.
   *$ "PCP"[0,0] = "P" $*
 ]
 
-#teorema("Teorema")[
+#theorem[
   Posso accedere all'*oracolo* solo un numero polinomiale di volte (rispetto all'input, quindi è possibile ispezionare tutta la stringa oracolica) ma non possono essere estratti bit random.
   *$ "PCP"[0,"Poly"] = "NP" $*
 ]
 
-#teorema("Teorema (Arora, Safra 1998)")[
-  #informalmente[
+#theorem(title: "Teorema (Arora, Safra 1998)")[
+  #informally[
     *Trade-off* fra *randomness* e *non determinismo*.
     Con una quantità di bit random logaritmica è possibile ridurre il numero di query all'oracolo a una costante (normalmente sarebbe polinomiale, dato che tutta la soluzione $w$ va controllata).
 
@@ -216,20 +216,20 @@ Un verificatore in forma normale, è un verificatore $V$ in forma $"PCP"[r, q]$,
 + tutte le posizioni della stringa $w$ interrogate in *qualsiasi punto dell'albero*, vengono interrogate immediatamente.
   Vengono effettuate $2^q$ query (rimane un $O(1)$)
 
-  #informalmente[
+  #informally[
     Le prime due assunzioni sono banali.
     La terza:
     - in un verificatore *adattivo*, le query che vengono effettuate in un determinato istante, dipendono dai risultati delle query precedenti (in nodi diversi dell'albero, anche se sullo stesso livello, possono venir effettuare query in posizioni diverse)
     - in un verificatore in *forma normale*, tutte le possibili posizioni interrogate vengono memorizzate immediatamente
   ]
 
-  #attenzione[
+  #warning[
     Trasformare un verificatore probabilisto *adattivo* in un verificatore probabilistico in forma normale fa crescere *esponenzialmente* il numero di query fare all'oracolo.
     Questo perchè vengono fatte immediatamente tutte le query (tutto l'albero) e non solo le query che dipendono dalla risposta precedente (un ramo dell'albero).
 
     Nel *caso specifico* di $"PCP"[O(log n), O(1)]$ questa cosa è irrilevante, dato il numero totale di query $overline(q)$ rimane una costante $<= 2^q$, molto più grande di prima ma rimane un $O(1)$.
 
-    #esempio[
+    #example[
       #figure(
         cetz.canvas({
           import cetz.draw: *
@@ -345,20 +345,20 @@ Queste assunzioni permettono:
 
 == Inapprossimabilità di $"Max"E_3"SAT"$ mediante PCP
 
-#teorema("Lemma")[
+#theorem(title: "Lemma")[
   Data una funzione booleana $f$:
   $
     f : 2^({x_1,dots,x_k}) -> {0,1}
   $
   Allora $f$ si può scrivere come una *CNF* con al più $2^k$ clausole, ognuna con esattamente $k$ letterali.
 
-  #informalmente[
+  #informally[
     Per ogni assegnamento che deve valere falso costruiamo una clausola che vale $0$ per esattamente quell'assegnamento.
 
     In questo modo, quando un assegnamento che deve valere falso viene passato, la corrispettiva clausola vale $0$, rendendo falsa tutta la CNF.
   ]
 
-  #esempio[
+  #example[
     #figure(
       table(
         columns: 4,
@@ -381,15 +381,15 @@ Queste assunzioni permettono:
   ]
 ] <pcp-lemma-formula-booleana>
 
-#teorema("Teorema")[
+#theorem[
   Esiste un $overline(epsilon) > 0$ tale che $"MaxSAT"$ non è $(1+overline(epsilon))$-approssimabile, a meno che $"P"="NP"$.
 
-  #informalmente[
+  #informally[
     Come per ogni dimostrazione di inapprossimabilità, andiamo a creare un input in cui il gap tra le soluzioni è molto grande.
     Con un'approssimazione troppo piccola, sarebbe possibile capire in quale soluzione ottima siamo, generando un assurdo.
   ]
 
-  #dimostrazione[
+  #proof[
     Sia $L$ un linguaggio $in "NPc"$.
     Di conseguenza, per qualche $r(n) in O(log(n))$ e $q in bb(N)$:
     $ L in "NP" = "PCP"[r(n),q] $
@@ -400,7 +400,7 @@ Queste assunzioni permettono:
     Possiamo descrivere questo comportamento come una funzione:
     $ f(w_(i_1(x,R)), dots, w_(i_q (x,R))) in {0, 1} space ("YES/NO") $
 
-    Siccome la stringa oracolica $w$ è una funzione booleana, per il lemma #link-teorema(<pcp-lemma-formula-booleana>), $f$ è descrivibile come una formula CNF $phi_(x,R)$ nelle variabili $w_(i_1(x,R)),dots,w_(i_q (x,R))$ con un numero di clausole $<= 2^q$, ciascuna di $q$ letterali.
+    Siccome la stringa oracolica $w$ è una funzione booleana, per il lemma #link-theorem(<pcp-lemma-formula-booleana>), $f$ è descrivibile come una formula CNF $phi_(x,R)$ nelle variabili $w_(i_1(x,R)),dots,w_(i_q (x,R))$ con un numero di clausole $<= 2^q$, ciascuna di $q$ letterali.
 
     Questa formula è diversa per qualsiasi possibile stringa $R$ random scelta.
     Chiamiamo con $Phi_x$ la congiunzione delle formule $phi_(x,R)$ per tutte le *possibili sequenze* di bit random $R$:
@@ -419,7 +419,7 @@ Queste assunzioni permettono:
 
     Esiste quindi un *polinomio* $P(|x|)$ per cui $Phi$ contiene esattamente $|P(x)|$ clausole.
 
-    #informalmente[
+    #informally[
       Ogni $phi_(x,R)$ rappresenta una "traccia di esecuzione" (ramo dell'albero) del verificatore con una specifica estrazione random $R$.
       La forma $Phi_x$ è soddisfacibile se e solo se esiste una *stringa* dell'oracolo $w$ che fa *accettare* il verificatore per *ogni* possibile *estrazione random*.
     ]
@@ -461,7 +461,7 @@ Queste assunzioni permettono:
         mr(t_x^* <= P(|x|)(1-overline(epsilon)))
       $
 
-    #nota[
+    #note[
       Viene usato il *$<=$* e *non* il *$<$* in $t_x^* <= P(|x|)(1-overline(epsilon))$, in quanto:
       - Se il verificatore rifiuta, la formula diventa FALSA.
       - Vuol dire che *almeno una clausola è falsa* (formule CNF in and), non per forza tutte.
@@ -505,21 +505,21 @@ Queste assunzioni permettono:
   ]
 ]
 
-#teorema("Crollario")[
+#theorem(title: "Crollario")[
   Eiste un $overline(epsilon) > 0$ t.c $"Max"E_3"Sat"$ non è $(1+overline(epsilon))$-approssimabile in tempo polinomiale, a meno che $"P" = "NP"$.
 
-  #nota[
+  #note[
     Nella pratica sappiamo che esiste una $8/7+overline(epsilon)$-approssimazione.
   ]
 ]
 
 == Inapprossimabilità di MaxIndependentSet
 
-#informalmente[
+#informally[
   Dato un grafo non orientato, vogliamo trovare il più grande insieme di vertici $X$ nessuna coppia di vertici è collegata direttamente da un lato.
 ]
 
-#esempio([
+#example([
   #figure(
     grid(
       columns: 2,
@@ -593,13 +593,13 @@ Formalmente:
 - *$C_pi$* = $|X|$
 - *$t_pi$* = $max$
 
-#teorema("Teorema")[
+#theorem[
   Per ogni $epsilon > 0$:
   $
     "MaxIndependentSet non è" (2-epsilon)-"approssimabile"
   $
   in tempo polinomiale, se $"P" != "NP"$
-  #dimostrazione[
+  #proof[
     Sia $L subset.eq 2^*$ un linguaggio NP-completo, allora :
     $
       L in "PCP"[r(n), q]
@@ -619,11 +619,11 @@ Formalmente:
       - $R eq R'$ //Todo verificare se != o =
       - oppure $exists k, k'$ tale che $i_k = i'_k'$ e $b_k != b'_k'$. Insieme di interrogazione uguale ma risposte dell'oracolo diverse.
 
-    #attenzione[
+    #warning[
       Anche se i vertici sono $|V| <= 2^r(|x|) dot 2^q$, nell'insieme indipendente il numero massimo di *vertici selezionabili* è uno per ogni "gruppo" $R$ (al massimo *$2^(r(|x|))$*). Non possiamo prendere due vertici che usano la stessa stringa random $R$ (incompatibili).
     ]
 
-    #esempio[
+    #example[
       configurazioni incompatibili:
       $
         (001,{3:0,mr(4:1),7:3})\
@@ -631,30 +631,30 @@ Formalmente:
       $
     ]
 
-    #informalmente[
+    #informally[
       Configurazioni indipendenti significa che non ci può essere una stringa dell'oracolo compatibile con entrambe le stringhe, *non possono coesistere* nello stesso universo.
     ]
 
-    #teorema("Fatto")[
+    #theorem(title: "Fatto")[
       Se *$x in L, G_x$* ha un insieme indipendente di cardinalità *$>= 2^r(|x|)$*
 
-      #dimostrazione[
+      #proof[
         $exists w$ che fa accettare con probabilità $1$.
         Prendiamo *tutte* le *configurazioni* accettanti *compatibili* con *$w$*.
         Queste configurazioni non hanno lati che le collegano (dato che sono compatibili).
 
         L'insieme di tali configurazioni è un insieme indipendente, dato che devo accettare con probabilità $1$, la sua cardinalità deve essere $2^r(|x|) space qed$
 
-        #nota[
+        #note[
           L'insieme di vertici ha dimensione $>= 2^r(|x|)$, in quanto per un qualunque $R$ devo accettare.
         ]
       ]
     ]<indipendent-sat-fatto-1>
 
-    #teorema("Fatto")[
+    #theorem(title: "Fatto")[
       Se *$x in.not L$*, ogni insieme indipendente di $G_x$ ha cardinalità $<= 2^(r(|x|)-1)$
 
-      #dimostrazione[
+      #proof[
         Per *assurdo*, sia $S subset.eq V_G_x$ un inieme indipendente dove:
         $
           |S| > 2^(r(|x|)-1)
@@ -663,13 +663,13 @@ Formalmente:
       ]
     ]<indipendent-sat-fatto-2>
 
-    #informalmente[
+    #informally[
       Se $x in L$, allora c'è un insieme indipendente di taglia grande, altrimenti avrà una dimensione ridotta (queste due casistiche sono disgiunte).
     ]
     Sia *$t_x^*$* la cardinalità del MaxIndependentSet per $G_x$:
-    - se $mb(x in L) underbrace(=>, #link-teorema(<indipendent-sat-fatto-1>)) t^*_x >= 2^(r(|x|))$
+    - se $mb(x in L) underbrace(=>, #link-theorem(<indipendent-sat-fatto-1>)) t^*_x >= 2^(r(|x|))$
 
-    - se $mr(x in.not L) underbrace(=>, #link-teorema(<indipendent-sat-fatto-2>)) t_x^* < 2^(r(|x|)-1) = 2^(r(|x|))/2$
+    - se $mr(x in.not L) underbrace(=>, #link-theorem(<indipendent-sat-fatto-2>)) t_x^* < 2^(r(|x|)-1) = 2^(r(|x|))/2$
 
     Adesso supposiamo per *assurdo* che esista un algoritmo $A$ in grado di restituire una soluzione $overline(t)$ approssimata, con:
     $
@@ -678,7 +678,7 @@ Formalmente:
     Guardiamo ora i due casi dinsgiunti:
     - Se $mb(x in L)$:
       $
-        overline(t) >= t^* / (2-epsilon) underbrace(>=, #link-teorema(<indipendent-sat-fatto-1>)) 2^(r(|x|)) / (2-epsilon) > 2^(r(|x|)) / 2
+        overline(t) >= t^* / (2-epsilon) underbrace(>=, #link-theorem(<indipendent-sat-fatto-1>)) 2^(r(|x|)) / (2-epsilon) > 2^(r(|x|)) / 2
       $
 
     - Se $mr(x in L)$:
