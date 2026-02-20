@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Set Cover (basato sul Probabilistic Rounding) [NPOc]
 
-#informalmente[
+#informally[
   Esiste un universo di $n$ _punti_.
   Questi punti sono coperti da $m$ _aree_, ognuna avente un _costo_.
   Le aree possono sovrapporsi (non sono una partizione).
@@ -10,7 +10,7 @@
   L'obiettivo è comprare un insieme di aree, tale che tutti i punti siano coperti, minimizzando il costo totale.
 ]
 
-#nota[
+#note[
   Problema già visto, #link-section(<problema-set-cover>).
   Avevamo trovato una soluzione approssimata basata sul *pricing*.
 ]
@@ -38,13 +38,13 @@ Formalizzando, i *vincoli* del problema Set Cover come ILP sono:
 La soluzione (da minimizzare) è la somma dei costi delle aree prese:
 $ min x_1 w_1 + x_2 w_2 + ... + x_m w_m $
 
-#nota[
+#note[
   Il numero di vincoli è polinomiale rispetto a $n$ e $m$.
 ]
 
 Questa istanza di ILP rappresenta esattamente un problema di Set Cover.
 
-#attenzione[
+#warning[
   La programmazione lineare intera (ILP) *non* si può risolvere in tempo polinomiale.
   Andiamo quindi a rilassare i vincoli, ottenendo un problema di programmazione lineare non intera (LP).
 ]
@@ -54,13 +54,13 @@ Questa istanza di ILP rappresenta esattamente un problema di Set Cover.
 Sia $hat(V)$ la versione del problema rilassata.
 I vincoli di $hat(V)$ diventano numeri reali $in [0,1]$, non più interi $0$ o $1$.
 
-#attenzione[
+#warning[
   Questa istanza non risolve più il problema di Set Cover, dato che non sappiamo quali aree comprare (un numero reale non è _chiaro_ come una variabile booleana).
 
   Abbiamo quindi bisogno di un algoritmo che decide quali aree selezionare.
 ]
 
-#informalmente[
+#informally[
   Ogni area $S_i$ viene inserita nella soluzione con una certa *probabilità*.
   Questa probabilità dipende dal numero reale soluzione della programmazione lineare.
 ]
@@ -82,19 +82,19 @@ I vincoli di $hat(V)$ diventano numeri reali $in [0,1]$, non più interi $0$ o $
   [*Output* $I$],
 )
 
-#attenzione[
+#warning[
   Non otteniamo sempre una soluzione ammissibile.
 ]
 
-#teorema("Teorema")[
+#theorem[
   L'algoritmo produce una soluzione ammissibile con probabilità $>= 1- e^(-k)$.
 
-  #informalmente[
+  #informally[
     Man mano che $k$ cresce, *aumenta* la probabilità di ottenere una *soluzione ammissibile*.
     Tuttavia, la qualità della soluzione ottenuta decresce (prendiamo più aree paghando di più).
   ]
 
-  #dimostrazione[
+  #proof[
     Sia $hat(v)$ la soluzione ottenuta risolvendo il problema di LP rilassato:
     $ hat(v) = sum_(i = 1)^m w_i hat(x)_i $
 
@@ -111,7 +111,7 @@ I vincoli di $hat(V)$ diventano numeri reali $in [0,1]$, non più interi $0$ o $
                         P["ammissibile"] quad & = quad 1 - P[union.big_(p in Omega) cal(E)_p]
     $
 
-    Applicando l'union bound (#link-teorema(<union-bound>)):
+    Applicando l'union bound (#link-theorem(<union-bound>)):
     $ >= quad 1- sum_(p in Omega) mr(P[cal(E)_p]) $
 
     Possiamo calcolare la probabilità di $mr(cal(E)_p)$ (un punto non sia coperto) come la probabilità che ogni area che include quel punto $i$ non sia stata comprata da $I$.
@@ -154,17 +154,17 @@ I vincoli di $hat(V)$ diventano numeri reali $in [0,1]$, non più interi $0$ o $
   ]
 ] <set-cover-probabilistico-ammissibile>
 
-#teorema("Teorema")[
+#theorem[
   Per ogni $1/alpha in [0, 1]$:
   $ P["fattore di approssimazione" >= alpha (k + ln n)] quad <= quad 1/alpha $
 
-  #informalmente[
+  #informally[
     La probabilità di avere un fattore di approssimazione grande (quindi una brutta soluzione) è bassa.
 
     Inoltre, dobbiamo capire quale sia l'$alpha$ migliore da dare in input all'algoritmo.
   ]
 
-  #dimostrazione[
+  #proof[
     Sappiamo che la probabilità che un insieme $i$ appartenga alla soluzione $I$ è:
     $ P[i in I] quad <= quad (k + ln n) hat(x)_i $
     <set-cover-probabilistico-bound-prob>
@@ -174,7 +174,7 @@ I vincoli di $hat(V)$ diventano numeri reali $in [0,1]$, non più interi $0$ o $
     $
       P[i in I] quad = quad P[union.big_(t=1)^(k+ln n)cal(F)_(t,i)]
     $
-    Applicando l'union bound (#link-teorema(<union-bound>)), otteniamo:
+    Applicando l'union bound (#link-theorem(<union-bound>)), otteniamo:
     $
       P[union.big_(t=1)^(k + ln n) cal(F)_(t, i)] quad & <= quad sum_(t=1)^(k + ln n) mr(P[cal(F)_(t, i)]) \
                                                        & = quad sum_(t=1)^(k + ln n) mr(hat(x)_i) \
@@ -202,7 +202,7 @@ I vincoli di $hat(V)$ diventano numeri reali $in [0,1]$, non più interi $0$ o $
       E[v / v^*] & <= k + ln n
     $ <set-cover-probabilistico-valore-atteso>
 
-    Applichiamo la disuguaglianza di Markov (#link-teorema(<disuguaglianza-di-markov>)):
+    Applichiamo la disuguaglianza di Markov (#link-theorem(<disuguaglianza-di-markov>)):
     $
       P[v/v^* >= alpha (k + ln n)] quad & space<= quad E[v/v^*] / (alpha (k + ln n)) \
       &underbrace(<=, #link-equation(<set-cover-probabilistico-valore-atteso>)) (k + ln n) / (alpha (k + ln n)) \
@@ -212,23 +212,23 @@ I vincoli di $hat(V)$ diventano numeri reali $in [0,1]$, non più interi $0$ o $
   ]
 ] <set-cover-approssimazione>
 
-#nota[
-  Usare bene il teorema per l'ammisibilità (#link-teorema(<set-cover-probabilistico-ammissibile>)) e per l'approssimazione (#link-teorema(<set-cover-approssimazione>)) significa trovare un valore di *$k$ bilanciato*:
+#note[
+  Usare bene il teorema per l'ammisibilità (#link-theorem(<set-cover-probabilistico-ammissibile>)) e per l'approssimazione (#link-theorem(<set-cover-approssimazione>)) significa trovare un valore di *$k$ bilanciato*:
   - Nel primo caso vorremo un $k$ alto, per aumentare l'ammissibilità
   - Nel secondo caso vorremmo un $k$ basso, per avere una soluzione più vicina all'ottimo
 ]
 
-#teorema("Corollario")[
+#theorem(title: "Corollario")[
   Eseguendo l'algoritmo con $k = 3$, c'è almeno il $45%$ di probabilità di ottenere una soluzione ammissibile con un rapporto di approssimazione di al massimo $6 + 2 ln n$.
 
-  #dimostrazione[
+  #proof[
     Sia:
     - $cal(E)_"non-amm"$ l'evento "l'algoritmo ha prodotto una soluzione non ammissibile".
-      Usando il teorema #link-teorema(<set-cover-probabilistico-ammissibile>) con $k = 3$:
+      Usando il teorema #link-theorem(<set-cover-probabilistico-ammissibile>) con $k = 3$:
       $ P[cal(E)_"non-amm"] <= e^(-3) $
 
     - $cal(E)_"non-ott"$ l'evento "la soluzione prodotta ha un tasso di approssimazione $> 6 + 2 ln n$".
-      Usando il teorema #link-teorema(<set-cover-approssimazione>) con $alpha = 2$:
+      Usando il teorema #link-theorem(<set-cover-approssimazione>) con $alpha = 2$:
       $
         P[cal(E)_"non-ott"] & = P["fatt approx" > 6 + 2 ln n] \
                             & <= 1/2
@@ -237,7 +237,7 @@ I vincoli di $hat(V)$ diventano numeri reali $in [0,1]$, non più interi $0$ o $
     - $cal(E)_"ok"$ l'evento "la soluzione è ammissibile e ha tasso di approssimazione $<= 6 + 2 ln n$", quindi una soluzione _buona_:
       $
         P[cal(E)_"ok"] & space = quad 1 - P[cal(E)_"non-amm" union cal(E)_"non-ott"] \
-                       & underbrace(>=, #link-teorema(<union-bound>)) 1- (P[cal(E)_"non-amm"] + P[cal(E)_"non-ott"]) \
+                       & underbrace(>=, #link-theorem(<union-bound>)) 1- (P[cal(E)_"non-amm"] + P[cal(E)_"non-ott"]) \
                        & space >= quad 1 - (e^(-3) + 1/2) \
                        & space tilde.equiv quad 45% space qed
       $

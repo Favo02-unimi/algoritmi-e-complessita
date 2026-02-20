@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Load Balancing [NPOc] [PTAS]
 
-#informalmente[
+#informally[
   Dato un numero di macchine fissato e un numero di task (di durata nota), vogliamo andare ad assegnare i task alle macchine, in modo tale che il *tempo* impiegato dalla macchina *più carica* sia il *minore* possibile.
 
   Vogliamo dunque distribuire il carico il meglio possibile, evitando di avere macchine in uno stato di idle prolungato.
@@ -23,16 +23,16 @@ Formalmente:
   $
 - *$t_Pi$*$= min$
 
-#nota[
+#note[
   La soluzione *ideale* assegnerebbe ad ogni macchina lo stesso carico, ovvero la *media* dei task:
   $ L = 1/m dot sum_(i=0)^(n-1) t_i $
 
-  #attenzione[
+  #warning[
     Non è detto che questa soluzione sia ottenibile, in quanto per realizzarla potrebbe essere necessario "spezzare" dei task.
   ]
 ]
 
-#esempio[
+#example[
   $m = 3, n = 8, t = [3, 1, 3, 1, 1, 4, 5, 1]$
 
   - $"macchina" 0$: $[5, 1]$ = $6$ tempo
@@ -42,13 +42,13 @@ Formalmente:
   Soluzione ideale (se i task fossero perfettamente divisibili): $ceil(19 / 3) = 7$, quindi questa soluzione (fatta intuitivamente) è quella ottima.
 ]
 
-#teorema("Teorema")[
+#theorem[
   *$ "LoadBalancing" in "NPOc" $*
 ]
 
 == Greedy LoadBalancing _(online)_ [$2$-APX]
 
-#nota[
+#note[
   Questo algoritmo è *online*, ovvero i task da assegnare alle varie macchine possono arrivare man mano.
   Non è necessario conoscerli tutti a priori.
 ]
@@ -65,7 +65,7 @@ Formalmente:
   [*Output* A],
 )
 
-#esempio[
+#example[
   $m = 3, n = 8, t = [3, 1, 3, 1, 1, 4, 5, 1]$
 
   - $"macchina" 0$: $[3, 4]$ = $"tempo" 7$
@@ -78,29 +78,29 @@ Formalmente:
 
 / Complessità di Greedy LoadBalancing: per ogni task ($n$), deve essere trovata la macchina più scarica. Utilizzando un heap (operazioni logaritmiche): $O(n log m)$, *polinomiale*.
 
-#teorema("Teorema")[
+#theorem[
   *$ "GreedyLoadBalancing" in 2"-APX" $*
 
-  #dimostrazione[
+  #proof[
 
-    #teorema("Osservazione 1")[
+    #theorem(title: "Osservazione 1")[
       La soluzione ottima $L^*$ ha uno _span_ (tempo usato dalla macchina più carica) che è almeno la *media* tra i task e il numero di macchine.
       Ovvero, se nessuna macchina sarà mai scarica, non ci sarà inattività, quindi la soluzione sarà ottima.
       $ L^* >= 1/m sum_(j in n)t_j $
 
-      #dimostrazione[
+      #proof[
         Se sommo i carichi di ogni macchina (supponendo, in questo caso, che siano distribuiti in maniera ottima $L_i^*$), ottengo la somma di tutti i task. Il lavoro totale completato è uguale al lavoro totale disponibile:
         $ sum_(i in m) L_i^* = sum_(j in n) t_j $
 
         Applicando il principio di *pigeonholing*, almeno una macchina $i$ avrà un carico maggiore o uguale alla media $1/m limits(sum)_(j in n) t_j$:
         $ exists i in m, space L_i^* >= 1/m sum_(j in n) t_j $
 
-        #nota[
+        #note[
           Il principio di *pigeonholing*, (oppure _della piccionaia_ o _delle camicie e cassetti_) afferma che se $m$ oggetti devono essere messi in $n$ contenitori, con $m > n$, allora almeno un contenitore deve contenere $> 1$ oggetti.
 
           Una generalizzazione afferma che ci sarà almeno un contenitore che conterrà almeno $ceil(m / n)$ oggetti, ovvero $>=$ alla media (come utilizzato sopra).
 
-          #informalmente[
+          #informally[
             Se ci sono $7$ camicie e $5$ cassetti, almeno un cassetto conterrà più della media tra camicie e cassetti, ovvero $> ceil(7 / 5)$, quindi $> 2$.
           ]
         ]
@@ -114,11 +114,11 @@ Formalmente:
       ]
     ] <greedy-load-balancing-apx-2-oss-1>
 
-    #teorema("Osservazione 2")[
+    #theorem(title: "Osservazione 2")[
       La soluzione ottima è grande almeno quanto il task più grande:
       $ L^* >= max_(j in n) t_j $
 
-      #dimostrazione[
+      #proof[
         Ovvia: il task più lungo deve per forza essere assegnato ad una macchina.
       ]
     ] <greedy-load-balancing-apx-2-oss-2>
@@ -142,19 +142,19 @@ Formalmente:
 
     Dividendo per $m$:
     $
-      L_hat(i)-t_hat(j) <= 1/m sum_(j in n)t_j underbrace(<=, "per" #link-teorema(<greedy-load-balancing-apx-2-oss-1>)) L^* #<greedy-load-balancing-m-minore-lstar>
+      L_hat(i)-t_hat(j) <= 1/m sum_(j in n)t_j underbrace(<=, "per" #link-theorem(<greedy-load-balancing-apx-2-oss-1>)) L^* #<greedy-load-balancing-m-minore-lstar>
     $
 
     Possiamo riscrivere la soluzione trovata $L$ (output dell'algoritmo) come :
     $
-      L = underbrace(L_hat(i), max L_i forall i) &= underbrace(L_hat(i) - t_hat(j), <= mr(L^*) "per" #link-equation(<greedy-load-balancing-m-minore-lstar>)) + underbrace(t_hat(j), <= mr(L^*) "per" #link-teorema(<greedy-load-balancing-apx-2-oss-2>)) \
+      L = underbrace(L_hat(i), max L_i forall i) &= underbrace(L_hat(i) - t_hat(j), <= mr(L^*) "per" #link-equation(<greedy-load-balancing-m-minore-lstar>)) + underbrace(t_hat(j), <= mr(L^*) "per" #link-theorem(<greedy-load-balancing-apx-2-oss-2>)) \
       L &<= mr(L^* + L^*) \
       L &<= 2L^*
     $
     Di conseguenza, dividendo per $L^*$ otteniamo il rapporto di approsimazione:
     *$ L/L^* <= 2 space qed $*
 
-    #informalmente[
+    #informally[
       La dimostrazione utilizza i seguenti concetti:
       - Utilizza proprietà dell'ottimo (non dell'algoritmo), ma senza sapere come questo ottimo viene costruito. Le osservazioni fatte valgono per una qualunque soluzione, al posto di $L^*$ si poteva usare $forall L$.
       - Ragionando sull'algoritmo:
@@ -165,7 +165,7 @@ Formalmente:
 
 A questo punto potremo chiederci se la dimostrazione proposta è la *"migliore possibile"*.
 
-#informalmente[
+#informally[
   Ci stiamo chiedendo se la dimostrazione proposta in precedenza è *precisa* oppure è *lasca*.
   Con lasca si intende che l'algoritmo è effettivamente 2-approssimante, ma potrebbe essere meglio, ovvero non si ottiene mai un output abbastanza brutto da essere un 2-ottimo.
 
@@ -174,17 +174,17 @@ A questo punto potremo chiederci se la dimostrazione proposta è la *"migliore p
   - Si va a migliorare la dimostrazione, ottenendo un $alpha$ più piccolo ($1.8$-APX ad esempio)
 ]
 
-#teorema("Teorema")[
+#theorem[
   $forall epsilon > 0, space exists x in I_Pi$ su cui Greedy LoadBalancing produce una soluzione:
   $ 2 - epsilon <= L / L^* <= 2 $
 
-  #informalmente[
+  #informally[
     Gli input occupano tutto lo spazio delle soluzioni:
     - alcuni vanno _bene_ e producono una soluzione con rapporto di approssimazione $2 - epsilon$
     - altri vanno _male_ e producono una $2$-approssimazione
   ]
 
-  #dimostrazione[
+  #proof[
     Dati:
     - $m in bb(N)^+ > 1/epsilon$: numero macchine
     - $n = m(m - 1) + 1$: numero task
@@ -198,14 +198,14 @@ A questo punto potremo chiederci se la dimostrazione proposta è la *"migliore p
 
     $ L/L^* = (2 m -1) / m = 2 - 1/m underbrace(>=, "per" m > 1 / epsilon) 2-epsilon space qed $
 
-    #informalmente[
+    #informally[
       L'algoritmo non sa che il task grande arriva alla fine, di conseguenza distribuisce equamente tra le varie macchine i task da $1$.
       In una ipotetica soluzione ottima, si potrebbe lasciare una macchina vuota e assegnarle il task da $m$ alla fine.
       In questo caso tutte le macchine arriverebbero alla fine con carico $m$ (le prime $m-1$ con $m - 1 + 1$ task da $1$, l'ultima con solo il carico da $m$).
       Questa è la soluzione ottima dato che è la media.
     ]
 
-    #nota[
+    #note[
       Questa dimostrazione ha anche evidenziato i punti deboli dell'algoritmo.
     ]
   ]
@@ -222,27 +222,27 @@ Un modo per cercare di risolvere i problemi descritti in precedenza è *ordinare
   [*Output* $A$],
 )
 
-#attenzione[
+#warning[
   Questa versione dell'algoritmo *non* è più *online*, ovvero è necessario avere a disposizione tutti i task prima di iniziare ad assegnarli alle macchine.
 ]
 
 / Complessità di Sorted Greedy LoadBalancing: oltre alla complessità di Greedy LoadBalancing $O(n log m)$, i task devono essere ordinati, in $O(n log n)$. Di conseguenza complessità totale: $O(n log n + n log m)$, *polinomiale*.
 
-#teorema("Teorema")[
+#theorem[
   *$ "SortedGreedyLoadBalancing" in 3/2"-APX" $*
 
-  #dimostrazione[
+  #proof[
     Abbiamo due casi:
     / Caso 1 $n <= m$: se ci sono meno task che macchine, *troviamo la soluzione ottima*.
       Il carico finale è la lunghezza del carico più lungo, per le osservazioni fatte in precedenza questo è l'ottimo.
 
     / *Caso 2 $n >m$*: ci sono più task che macchine:
 
-      #teorema("Osservazione 1")[
+      #theorem(title: "Osservazione 1")[
         La soluzione ottima è almeno due volte il task di indice $m$:
         $ L^* >= 2 t_m $
 
-        #dimostrazione[
+        #proof[
           $ underbrace(t_0 >= t_1 >= ... >= t_(m-1) >= t_m, "m+1 task") >= ... >= t_(n-1) $
           Per il principio del _pigeonholing_, almeno due task sono assegnati alla stessa macchina. Dato che il task $t_m$ è il più piccolo tra i primi $m+1$, allora i due assegnati alla stessa macchina devono essere per forza $>= 2 t_m$:
           $ L^* >= underbrace(L_i^*, i "ha almeno" \ "due task") >= 2t_m space qed $
@@ -256,7 +256,7 @@ Un modo per cercare di risolvere i problemi descritti in precedenza è *ordinare
         $
             hat(j) & >= m \
           t_hat(j) & underbrace(<=, "task ordinate") t_m \
-          t_hat(j) & <= 2t_m underbrace(&<=, "per" #link-teorema(<sorted-greedy-loadbalancing-32-apx-oss1>)) L^* \
+          t_hat(j) & <= 2t_m underbrace(&<=, "per" #link-theorem(<sorted-greedy-loadbalancing-32-apx-oss1>)) L^* \
           t_hat(j) & <= t_m <= 1/2 L^*
         $
         Quindi:
@@ -269,7 +269,7 @@ Un modo per cercare di risolvere i problemi descritti in precedenza è *ordinare
   ]
 ]
 
-#attenzione[
+#warning[
   Questa dimostrazione non è la migliore possibile.
   L'algoritmo non arriverà mai a generare una soluzione $3/2$ volte più grande dell'ottimo.
 
@@ -279,25 +279,25 @@ Un modo per cercare di risolvere i problemi descritti in precedenza è *ordinare
 
 == LoadBalancing e PTAS/FPTAS
 
-#teorema("Teorema")[
+#theorem[
   *$ "LoadBalancing" in "PTAS" $*
 
-  #dimostrazione[
+  #proof[
     Dimostrato da _Hochbaum-Shmoys 1988_.
   ]
 ]
 
-#teorema("Teorema")[
+#theorem[
   *$ "Se P" != "NP, LoadBalancing" in.not "FPTAS" $*
 
-  #dimostrazione[
+  #proof[
     Il problema di decisione associato a LoadBalancing è fortemente NP completo.
   ]
 ]
 
 === PTAS per 2-Load Balancing _(offline)_
 
-#nota[
+#note[
   Versione semplificata del problema $"LoadBalancing"$, con $m = 2$, ovvero solo $2$ macchine.
 ]
 
@@ -336,15 +336,15 @@ Algoritmo:
   ),
 )
 
-#attenzione[
+#warning[
   Questo algoritmo rimane polinomiale sulla lunghezza dell'input, ovvero su $n$, ma diventa esponenziale su $epsilon$.
   Per $epsilon -> 0$ i tempi di esecuzione diventano esponenziali.
 ]
 
-#teorema("Teorema")[
+#theorem[
   L'algoritmo è una $(1+epsilon)$-approssimazione per $2$-$"LoadBalancing"$.
 
-  #dimostrazione[
+  #proof[
     Definiamo $T$ come la somma del lavoro da effettuare, ovvero la somma delle task:
     $ T = sum_(i in n) t_i $
 
@@ -371,7 +371,7 @@ Algoritmo:
         Dato che nella _fase$2$_ la soluzione prodotta nella _fase$1$_ (quindi ottima) non viene toccata, essa rimane ottima.
         Per ottenere una soluzione migliore bisognerebbe migliorare la _fase$1$_, ma questo è impossibile in quanto è già ottima $qed$.
 
-        #dimostrazione[
+        #proof[
           Dimostrazione del fatto "banale".
 
           Sia $L$ una soluzione prodotta dall'algoritmo, dove $L = L_1 >= L_2$ (senza perdita di generalità, #link-equation(<ptas-load-balancing-perdita-generalita>)).

@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Vertex Cover (copertura di vertici) [NPOc]
 
-#informalmente[
+#informally[
   Dato un grafo $G(V,E)$, vogliamo trovare un sottoinsieme di vertici $X subset.eq V$ tale che ogni lato $in E$ ha almeno un'estremo in $X$.
 
   Ogni lato del grafo deve essere coperto da almeno un vertice.
@@ -18,7 +18,7 @@ Formalmente:
   $ sum_(i in X)w_i $
 - *$t_Pi$*$= min$
 
-#nota[
+#note[
   La notazione $e inter X$ è valida perché un lato $e$ non è altro che un _insieme_ di due vertici.
 
   In una soluzione ammissibile, almeno un'estremità di ogni lato (una coppia di vertici) deve appartenere all'insieme dei vertici coperti $X$, quindi $forall e in E, e inter X != emptyset$.
@@ -26,11 +26,11 @@ Formalmente:
 
 == Riduzione di VertexCover a SetCover [$H(D)$-APX]
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   La versione di decisione di $"VertexCover"$ è polinomialmente riducibile all'istanza di decisione di $"SetCover"$:
   *$ hat("VertexCover") <=_p hat("SetCover") $*
 
-  #dimostrazione[
+  #proof[
     Data un'istanza di $"VertexCover"$:
     $ x' = (underbrace(G=(V,E), "grafo"), underbrace((w_i)_(i in V), "costi"), underbrace(overline(w), "budget")) $
 
@@ -49,7 +49,7 @@ Formalmente:
     - I _costi_ degli insiemi come i costi del vertice che rappresentano: $v_i = w_i$
     - Il _budget_ rimane invariato: $overline(w) = overline(v)$
 
-    #informalmente[
+    #informally[
       I _punti_ dell'universo da coprire diventano i _lati_, mentre le _aree_ sono i _vertici_.
       Andando a selezionare un'area (quindi un vertice) copriamo tutti i lati che sono connessi a quel vertice.
 
@@ -68,16 +68,16 @@ Formalmente:
   ]
 ] <vertex-cover-riducibile-set-cover>
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   *$ "VertexCover" in H(D)"-APX" $*
   dove $D$ è il grado massimo del grafo.
 
-  #dimostrazione[
-    Abbiamo dimostrato che $"VertexCover" <=_p "SetCover"$ (#link-teorema(<vertex-cover-riducibile-set-cover>)).
+  #proof[
+    Abbiamo dimostrato che $"VertexCover" <=_p "SetCover"$ (#link-theorem(<vertex-cover-riducibile-set-cover>)).
     Dato che il valore della *funzione obiettivo* viene conservato, possiamo usare l'algoritmo di approssimazione per $"SetCover"$ che garantisce un rapporto di approssimazione $H(D)$ anche per $"VertexCover"$, ottenendo una soluzione con la *stessa approssimazione* $qed$.
   ]
 
-  #attenzione[
+  #warning[
     Due problemi $in "NPOc"$ *non* è detto che mantengano la *stessa approssimazione*!
 
     In questo esempio l'approssimazione è mantenuta perché i valori della *funzione obiettivo* sono gli stessi.
@@ -89,13 +89,13 @@ Formalmente:
 In ogni istante è presente una *funzione di prezzatura* (pricing):
 $ chevron.l P_e chevron.r quad forall e in E $
 
-#nota[
+#note[
   Notazione:
   - $P_e$ indica il prezzo di un singolo lato $e$. È una _variabile duale_ associata al lato $e$
   - $chevron.l P_e chevron.r$ indica l'insieme di tutti i prezzi dei lati $e$. Non è propriamente una _funzione_ (nonostante si comporti come tale) ma l'_intero vettore_ di _variabili duali_
 ]
 
-#informalmente[
+#informally[
   Per ogni lato, la funzione di pricing indica il prezzo offerto da quel lato.
   Un vertice può essere comprato se la somma dei prezzi offerti dai lati incidenti su di esso è $>=$ al suo costo.
 
@@ -106,11 +106,11 @@ $ chevron.l P_e chevron.r quad forall e in E $
   una prezzatura $chevron.l P_e chevron.r$ si dice *equa* se ogni vertice riceve dai lati incidenti un'offerta minore o uguale al suo prezzo d'acquisto $w_i$ (ovvero nessun vertice riceve più del suo costo):
   $ forall i in V, quad sum_(e "t.c." i in e) P_e <= w_i $
 
-  #nota[
+  #note[
     La prezzatura equa banale è quando ogni lato offre $0$.
   ]
 
-  #esempio[
+  #example[
     #figure(
       cetz.canvas({
         import cetz.draw: *
@@ -150,7 +150,7 @@ $ chevron.l P_e chevron.r quad forall e in E $
   una prezzatura $chevron.l P_e chevron.r$ si dice *stretta* su un vertice $overline(i) in V$ se l'offerta proveniente dai lati incidenti è esattamente uguale al suo costo $w_i$:
   $ sum_(e "t.c." overline(i) in e) P_e = w_overline(i) $
 
-  #esempio[
+  #example[
     #figure(
       cetz.canvas({
         import cetz.draw: *
@@ -183,7 +183,7 @@ $ chevron.l P_e chevron.r quad forall e in E $
 
 === Algoritmo PricingVertexCover
 
-#informalmente[
+#informally[
   L'algoritmo proposto *non* passa mai per *offerte inique*:
   - si parte dalla prezzatura equa banale (tutti 0)
   - ad ogni passo si cerca di creare una prezzatura stretta su un certo vertice, in modo da acquistarlo
@@ -210,7 +210,7 @@ $ chevron.l P_e chevron.r quad forall e in E $
   [*Output* $X$],
 )
 
-#esempio[
+#example[
   #let draw-graph-step(pricings: (:), purchased: ()) = {
     cetz.canvas({
       import cetz.draw: *
@@ -287,11 +287,11 @@ $ chevron.l P_e chevron.r quad forall e in E $
   $
 ]
 
-#teorema("Lemma")[
+#theorem(title: "Lemma")[
   Se $chevron.l P_e chevron.r$ è una *prezzatura equa*, allora la somma della prezzatura di ogni lato $P_e$ è minore o uguale al costo della soluzione ottima $w^*$:
   $ sum_(e in E) P_e <= w^* $
 
-  #dimostrazione[
+  #proof[
     Per definizione di prezzatura equa sappiamo che per ogni vertice, la somma dei _prezzi degli archi_ incidenti è minore o uguale al suo _costo_:
     $ forall i, quad mr(sum_(e, i in e) P_e) <= mb(w_i) $ <vertex-cover-eq-definizione-prezzatura-equa>
 
@@ -314,15 +314,15 @@ $ chevron.l P_e chevron.r quad forall e in E $
   ]
 ] <lemma1-vertex-cover>
 
-#teorema("Lemma")[
+#theorem(title: "Lemma")[
   La soluzione *$w$* trovata da $"PricingVertexCover"$ è minore o uguale al doppio della prezzatura (somma delle offerte dei lati):
   $ w <= 2 sum_(e in E) P_e $
 
-  #informalmente[
+  #informally[
     Ogni lato, può pagare la propria offerta al *massimo* due volte, dato che può contribuire all'acquisto di *nessuno*, *uno* o *entrambi* i vertici adiacenti.
   ]
 
-  #dimostrazione[
+  #proof[
     Definiamo l'insieme dei vertici $X$ come l'insieme dei vertici su cui la prezzatura $P_e$ è stretta, ovvero una soluzione di PricingVertexCover.
     Il costo totale pagato è, quindi, la somma dei vertici selezionati $X$:
     $ w = sum_(i in X) mr(w_i) $
@@ -342,17 +342,17 @@ $ chevron.l P_e chevron.r quad forall e in E $
   ]
 ] <lemma2-vertex-cover>
 
-#teorema("Teorema")[
+#theorem[
   *$ "PricingVertexCover" in 2"-APX" $*
 
-  #dimostrazione[
-    Per #link-teorema(<lemma2-vertex-cover>):
+  #proof[
+    Per #link-theorem(<lemma2-vertex-cover>):
     $
                 w & <= 2 sum_(e in E) P_e \
       w / mr(w^*) & <= (2 limits(sum)_(e in E) P_e) / mr(w^*)
     $
 
-    Ma dato che, per #link-teorema(<lemma1-vertex-cover>), $mr(w^*) >= mb(limits(sum)_(e in E) P_e)$, allora:
+    Ma dato che, per #link-theorem(<lemma1-vertex-cover>), $mr(w^*) >= mb(limits(sum)_(e in E) P_e)$, allora:
 
     $
       w / w^* space <= space
@@ -368,18 +368,18 @@ $ chevron.l P_e chevron.r quad forall e in E $
   ]
 ]
 
-#teorema("Teorema")[
+#theorem[
   Non è noto alcun algoritmo polinomiale che offre un'approssimazione significativamente migliore di $2$.
 
-  #informalmente[
+  #informally[
     Neanche selezionando il lato che minimizza il $Delta$ tra tutti i lati selezionabili.
   ]
 ]
 
-#teorema("Teorema")[
+#theorem[
   *$ "VertexCover" in.not "PTAS" $*
 
-  #informalmente[
+  #informally[
     Non esistono algoritmi che garantiscono un certo tasso di approssimazione, nemmeno, ad esempio, provando a effettuare un _bruteforce_ su una parte ridotta di lati/vertici.
   ]
 ]
@@ -390,7 +390,7 @@ Ulteriore soluzione a VertexCover, anch'essa 2-approssimazione, basata sul probl
 
 === Problema Programmazione Lineare (LP) [PO] <problema-programmazione-lineare>
 
-#informalmente[
+#informally[
   Abbiamo $n$ variabili, ovvero gli elementi del vettore $x$.
 
   Queste variabili sono sottoposte a dei vincoli, ogni vincolo è una riga della matrice (quindi $m$ vincoli).
@@ -411,17 +411,17 @@ Formalmente:
   $ underline(c)^T underline(x) $
 - *$t_Pi$*$= min$
 
-#nota[
+#note[
   I vincoli possono essere sia di $>=$ che $<=$ (basta cambiare i segni della riga)
 
   Se vogliamo un vincolo $=$, basta mettere entrambi i vincoli, sia $>=$ che $<=$.
 
-  #attenzione[
+  #warning[
     I vincoli stretti $>$ o $<$ sono molto più complessi _(non li vediamo)_.
   ]
 ]
 
-#esempio[
+#example[
   Supponiamo di avere le seguenti variabili e vincoli:
   - $x_1, x_2 in bb(Q)$ (variabili)
   - Vincoli:
@@ -439,25 +439,25 @@ Formalmente:
   $
 ]
 
-#informalmente[
+#informally[
   Ci vuole poco a rendere questa cosa non lineare, basta aggiungere un valore assoluto o un quadrato su un vincolo o sulla funzione obiettivo.
 ]
 
-#teorema("Teorema")[
+#theorem[
   *$ "LinearProgramming" in "PO" $*
 
-  #dimostrazione[
+  #proof[
     Dimostrato da _Karmarkar, 1981_.
   ]
 
-  #attenzione[
+  #warning[
     Nonostante esista una soluzione polinomiale, sono spesso preferite soluzioni che, nel caso peggiore, sono _esponenziali_ ma che performano meglio nel mondo reale (come l'algoritmo del Simplesso).
   ]
 ]
 
 === Programmazione Lineare Intera (ILP) [NPOc] <problema-programmazione-lineare-intera>
 
-#informalmente[
+#informally[
   Stesso problema della LP, ma con solo interi come soluzioni ammissibili.
 
   Nonostante l'insieme delle soluzioni sia un sottoinsieme rispetto a LP, il problema è più difficile.
@@ -472,10 +472,10 @@ Formalmente:
 - *$C_Pi$*: il valore pesato della soluzione, $underline(c)^T underline(x)$
 - *$t_Pi$*$= min$
 
-#teorema("Teorema")[
+#theorem[
   *$ "IntegerLinearProgramming" in "NPOc" $*
 
-  #attenzione[
+  #warning[
     Non sono note nemmeno approssimazioni con tassi di approssimazione decenti.
 
     Gli algoritmi utilizzati sono esponenziali (come il branch and bound).
@@ -521,7 +521,7 @@ Questa è un'istanza di vertex cover *esatta* $Pi$, che è possibile dare ad un 
 
 === Vertex Cover come LP approssimata
 
-#informalmente[
+#informally[
   Dato che il problema di _ILP_ è _NPOc_, si può provare a rilassare il problema, ovvero cercare una soluzione in $bb(Q)$, rendendolo un problema di _LP_ (quindi _PO_).
 
   Le soluzioni in $bb(Q)$ andranno poi approssimate a soluzioni intere, dato che non ha senso avere variabili booleane che valgono un numero diverso da $1$ e $0$.
@@ -529,11 +529,11 @@ Questa è un'istanza di vertex cover *esatta* $Pi$, che è possibile dare ad un 
 
 Possiamo quindi calcolare una soluzione rilassata utilizzando un solutore di LP, dove ogni variabile avrà valore $0 <= x_i <= 1$.
 
-#teorema("Teorema")[
+#theorem[
   Se un problema $Pi$ è un problema ILP e $tilde(Pi)$ è la sua versione rilassata LP, allora le soluzioni intere sono sicuramente maggiori o uguali a quelle razionali:
   $ w^* >= tilde(w)^* $
 
-  #attenzione[
+  #warning[
     Questa cosa vale per i problemi di minimizzazione, per la massimizzazione è il contrario.
   ]
 ] <vertex-cover-ilp-intere-rilassate>
@@ -547,14 +547,14 @@ $
   )
 $
 
-#informalmente[
+#informally[
   Questa approssimazione è un Vertex Cover valido?
 ]
 
-#teorema("Osservazione")[
+#theorem(title: "Osservazione")[
   Il vettore approssimato $underline(r)$ rappresenta un Vertex Cover *ammissibile*.
 
-  #dimostrazione[
+  #proof[
     Per assurdo, supponiamo esista un lato ${i, j} in E$ non coperto, quindi entrambi i suoi vertici valgono $0$:
     $
       exists space{i, j} in E, quad "t.c." quad r_i = 0 r_j = 0
@@ -569,15 +569,15 @@ $
   ]
 ]
 
-#informalmente[
+#informally[
   Quanto è buona questa approssimazione?
 ]
 
-#teorema("Osservazione")[
+#theorem(title: "Osservazione")[
   Per ogni vertice, l'approssimazione $r_i$ è al massimo il doppio del valore razionale $tilde(x)_i^*$:
   $ forall i in V, quad r_i <= 2 tilde(x_i)^* $
 
-  #dimostrazione[
+  #proof[
     Esistono due casi:
     $
       cases(
@@ -588,26 +588,26 @@ $
   ]
 ] <vertex-cover-ilp-r-approssimazione>
 
-#teorema("Lemma")[
+#theorem(title: "Lemma")[
   L'approssimazione del vettore $underline(r)$ pesata con $w_i$ è al massimo il doppio della soluzione rilassata ottima $tilde(w)^*$:
 
   $ sum_(i in V) w_i r_i <= 2 tilde(w)^* $
 
-  #dimostrazione[
+  #proof[
     $
-      sum_(i in V) w_i mr(r_i) & quad underbrace(<=, #link-teorema(<vertex-cover-ilp-r-approssimazione>)) quad sum_(i in V) w_i mr(2 tilde(x)_i^*) \
+      sum_(i in V) w_i mr(r_i) & quad underbrace(<=, #link-theorem(<vertex-cover-ilp-r-approssimazione>)) quad sum_(i in V) w_i mr(2 tilde(x)_i^*) \
       sum_(i in V) w_i r_i & quad <= quad 2 sum_(i in V) w_i tilde(x)_i^* \
       sum_(i in V) w_i r_i & quad <= quad 2 tilde(w)^* space qed
     $
   ]
 ] <vertex-cover-ilp-2-approssimazione>
 
-#teorema("Teorema")[
+#theorem[
   Il vettore $underline(r)$ è una soluzione $2$-approssimata di VertexCover.
 
-  #dimostrazione[
+  #proof[
     $
-      sum_(i in V) w_i r_i quad underbrace(<=, #link-teorema(<vertex-cover-ilp-2-approssimazione>)) quad 2 tilde(w)^* quad underbrace(<=, #link-teorema(<vertex-cover-ilp-intere-rilassate>)) quad 2 w^* space qed
+      sum_(i in V) w_i r_i quad underbrace(<=, #link-theorem(<vertex-cover-ilp-2-approssimazione>)) quad 2 tilde(w)^* quad underbrace(<=, #link-theorem(<vertex-cover-ilp-intere-rilassate>)) quad 2 w^* space qed
     $
   ]
 ]

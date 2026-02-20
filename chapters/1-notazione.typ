@@ -1,4 +1,4 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Notazione e Proprietà Notevoli <notazione>
 
@@ -9,7 +9,7 @@
 / $bb(Q)$: Numeri razionali (frazioni)
 / $bb(R)$: Numeri reali
 
-#nota[
+#note[
   Tutti gli insiemi prevedono anche il loro sottoinsieme _strettamente_ positivo: $bb(N^+), bb(Z^+), bb(Q^+), bb(R^+)$
 ]
 
@@ -21,7 +21,7 @@
 / $w in Sigma^*$: parola o stringa (sequenza di simboli) sull'alfabeto $Sigma$
 / $|w|$: lunghezza della parola $w$
 
-#esempio[
+#example[
   $Sigma = { a, b, c }$
 
   $Sigma^* = { epsilon, a, b, c, a a, a b, a c, b a, b b, b c, c a, c b, c c, ... }$
@@ -35,10 +35,10 @@
 / $A^B$: insieme delle funzioni da $B$ (dominio) ad $A$ (codominio):
 $ A^B = { f | f : B -> A } $
 
-#nota[
+#note[
   L'idea della notazione è sapere immediatamente quante sono queste funzioni. Assumendo che $A$ e $B$ siano finiti, allora esistono $|A|^(|B|)$ funzioni da $B$ ad $A$.
 
-  #esempio[
+  #example[
     Dati $A = {a, b, c}$ e $B = {0,1}$, quante funzioni esistono da $A$ a $B$?
     Per ogni elemento del dominio ($A$), posso scegliere ogni elemento del codominio ($B$), quindi $2 dot 2 dot 2 = 2^3 = |B|^(|A|)$.
   ]
@@ -48,7 +48,7 @@ $ A^B = { f | f : B -> A } $
 
 Se $k in bb(N)$, allora usiamo lo stesso simbolo $k$ per definire tutto l'insieme $k = {0, 1, ..., k-1}$.
 
-#informalmente[
+#informally[
   Usiamo lo stesso simbolo sia per il numero singolo che per l'insieme. Bisogna capire a seconda del contesto.
 ]
 
@@ -57,13 +57,13 @@ Possiamo quindi scrivere:
 - $1 = {0}$ (insieme che contiene un qualsiasi singolo elemento)
 - $2 = {0,1}$ alfabeto binario
 
-#esempio[
+#example[
   Sia $A$ un insieme, possiamo scrivere:
   - $A^2 = {(a, b) | a, b in A} subset.eq A times A$: "normalmente" è l'insieme delle coppie di $A$
   - $A^2 = {f | f: 2 -> A}$: con la notazione appena introdotta, $2$ è insieme, quindi, usando la notazione potenze di insiemi, è l'insieme delle funzioni da $2 = {0, 1}$ ad $A$
   - $2^A = { f | f : A -> 2 } tilde.equiv P(A)$: insieme dei sottoinsiemi di $A$. Ogni sottoinsieme può essere rappresentato da una funzione binaria ($A -> 2$) che decide se un elemento appartiene al sottoinsieme. Di conseguenza l'insieme di tutte le funzioni binarie da $A$ non è altro che l'insieme delle parti di $A$
 
-  #nota[
+  #note[
     Siano $A$ e $B$ due insiemi, $P(A) = {B | B subset.eq A}$. Ovvero tutti i possibili sottoinsiemi dell'insieme A, compresi $emptyset$ e $A$ stesso, detto insieme delle parti.
     La cardinalità dell'insieme delle parti di $A$ è $2^(|A|)$, per questo la notazione $2^"insieme"$.
   ]
@@ -75,7 +75,7 @@ Utilizzando la notazione di insieme appena introdotta, possiamo descrivere:
 - $2^* =$ alfabeto delle stringhe binarie, ovvero il "linguaggio completo"
 - $2^2^* = { X | X "è un linguaggio" }$: insieme dei sottoinsiemi di stringhe binarie, ovvero i linguaggi definiti sull'alfabeto $Sigma = {0, 1}$.
 
-#esempio[
+#example[
   Alcuni esempi di linguaggio:
   - $A = emptyset$: linguaggio vuoto
   - $B = 2^*$: linguaggio che include tutte le possibili stringhe binarie
@@ -145,7 +145,7 @@ Utilizzando la notazione di insieme appena introdotta, possiamo descrivere:
   $ P[X >= alpha] <= E[X]/alpha $
 
 === ottimizzazione
-- $t_h = "max"$: 
+- $t_h = "max"$:
   $
     "APX" <= "Ottimo"\
     "APX" >= "Ottimo"/"Fattore APX"

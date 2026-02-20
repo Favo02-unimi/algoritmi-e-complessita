@@ -1,8 +1,8 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema Knapsack (dello zaino) [NPOc] [FPTAS]
 
-#informalmente[
+#informally[
   Dati un insieme di oggetti ciascuno con un certo _peso_ e _valore_ e uno _zaino_ con una _capacità_ massima, vogliamo mettere nello zaino un sotto-insieme degli oggetti di valore massimo non superando la capienza dello zaino.
 ]
 
@@ -18,18 +18,18 @@ Formalmente:
   $ v = sum_(i in I) v_i $
 - *$t_Pi$*$= max$
 
-#teorema("Teorema")[
+#theorem[
   *$ "Knapsack" in "NPOc" $*
 ]
 
-#nota[
+#note[
   Anche se sappiamo che questo problema non può essere risolto in modo efficiente (dato che è NPOc), ha comunque senso proporre delle soluzioni esatte.
   Per un certo insieme di istanze (di piccola taglia), l'algoritmo proposto funziona bene.
 ]
 
 == Programmazione Dinamica (DP)
 
-#nota[
+#note[
   Piccola sezione che *non* intende descrivere ampiamente la programmazione dinamica, ma solo fornire una piccola infarinatura utile a comprendere la notazione delle sezioni successive.
   Si rimanda a #link("https://it.wikipedia.org/wiki/Programmazione_dinamica")[Wikipedia] e alla #link("https://ioi.di.unimi.it/dinamica.pdf")[dispensa di S. Vigna].
 ]
@@ -37,7 +37,7 @@ Formalmente:
 La programmazione dinamica è una tecnica algoritmica che si basa sulla divisione del problema in tanti *sottoproblemi* (non necessariamente disgiunti, altrimenti si potrebbero usare soluzioni #link("https://it.wikipedia.org/wiki/Divide_et_impera_(informatica)")[divide-et-impera]), le cui soluzioni (ottime) vengono sfruttate per costruire l'*ottimo* totale.
 Generalmente un sottoproblema sfrutta le soluzioni dei sottoproblemi risolti in *precedenza* per calcolare il proprio ottimo.
 
-#informalmente[
+#informally[
   È possibile vedere una DP come un'implementazione _"intelligente"_ di una risoluzione di problema con approccio *top-down ricorsivo* (e *memoization*).
 
   Tipicamente viene costruita una *tabella* $n$-dimensionale, dove $n$ è il numero di parametri, che non è altro che la memoization.
@@ -59,7 +59,7 @@ Generalmente un sottoproblema sfrutta le soluzioni dei sottoproblemi risolti in 
 
 == Soluzione esatta basata sulla DP <knapsack-prima-versione-dp>
 
-#attenzione[
+#warning[
   La soluzione proposta con questo approccio è *esatta* (fornisce l'ottimo), ma *non è polinomiale* (in quanto il problema di decisione associato è $"NPc"$) ma *pseudopolinomiale*.
 ]
 
@@ -90,14 +90,14 @@ Per questo motivo si ricorre alla programmazione dinamica.
   $
   Quindi andiamo a riempire dall'alto verso il basso una riga alla volta della tabella.
 
-  #nota[
+  #note[
     Grazie al criterio di riempimento scelto (*per righe*) non c'è bisogno di tenere l'intera tabella in memoria, basta solamente tenere la riga precedente e la corrente.
     Lo spazio occupato è $Theta(2W)$, al posto di $Theta(n dot W)$.
   ]
 
 / Soluzione finale della DP: sottoproblema dove sono considerati tutti gli $n$ oggetti con capacità dello zaino di $W$, ovvero la cella in basso a destra della tabella.
 
-#esempio[
+#example[
   Consideriamo un'istanza semplice del problema Knapsack:
   - Capacità zaino: $W = 5$
   - Numero oggetti: $n = 3$
@@ -153,13 +153,13 @@ Algoritmo:
   [*Output* $v[n,W]$],
 )
 
-#attenzione[
+#warning[
   Questo algoritmo a prima vista *sembra* polinomiale, $O(n dot W)$.
 
   Tuttavia, il secondo ciclo (e la grandezza della tabella) dipende dal *valore* di $W$ e non dalla sua lunghezza in bit.
   Questo algoritmo è *pseudopolinomiale* (#link-section(<pseudopolinomialita>)), in quanto alla crescita lineare della lunghezza in bit di $W$, il suo valore cresce esponenzialmente.
 
-  #nota[
+  #note[
     L'algoritmo è pseudopolinomiale solo su $W$ e non su $n$ perché il numero di oggetti non ci serve davvero, è semplicemente il numero di pesi/valori.
   ]
 ]
@@ -171,7 +171,7 @@ Algoritmo:
   - *$v$* (colonne): valore minimo che voglio portare a casa
   - *$w[i, v]$* (cella): minima capacità dello zaino per portare via almeno valore $v$ con i primi $i$ oggetti (non sempre è possibile, dove è impossibile inseriamo $infinity$, ovvero uno zaino infinitamente grande)
 
-  #nota[
+  #note[
     Per semplicità, nei conti che faremo nelle prossime sezioni considereremo il numero di colonne di questa DP come $n dot V$, dove $V$ è il valore più grande tra tutti gli oggetti ($V = max_i v_i$).
 
     In realtà, basterebbero tante colonne quante la somma del valore di tutti gli oggetti $sum_i v_i$, dato che è impossibile ottenere un valore totale maggiore.
@@ -200,7 +200,7 @@ Algoritmo:
     )
   $
 
-  #nota[
+  #note[
     È necessario dividere i due casi in quanto la componente $v+1-v_i$ del primo caso può essere negativa.
   ]
 
@@ -208,13 +208,13 @@ Algoritmo:
   Alcune celle potrebbero essere $> W$, ovvero più grandi della capacità dello zaino.
   La soluzione finale è il numero di colonna contenente cella con valore più alto tale che il suo contenuto sia $<= W$, ovvero la colonna più a destra con contenuto $<= W$.
 
-  #attenzione[
+  #warning[
     La soluzione non è il contenuto della cella, ma il numero di colonna!
   ]
 
 // TODO: pinit fa cagare, trovare libreria migliore per disegnare in absolute
 #show: gentle-clues.gentle-clues.with(breakable: false)
-#esempio[
+#example[
   Consideriamo la stessa istanza ma con valori ridotti:
   - Capacità zaino: $W = 5$
   - Numero oggetti: $n = 3$
@@ -299,13 +299,13 @@ Algoritmo:
 // TODO: pinit fa cagare, trovare libreria migliore per disegnare in absolute
 #show: gentle-clues.gentle-clues.with(breakable: true)
 
-#attenzione[
+#warning[
   Dato che ancora una volta la complessità dipende dal *valore* (e non dalla lunghezza in bit) dell'input (nello specifico dai valori di $v_i$), allora l'approccio proposto è *pseudopolinomiale* (#link-section(<pseudopolinomialita>)).
 ]
 
 == Scaling per Colonna (soluzione approssimata)
 
-#informalmente[
+#informally[
   Questo approccio viene anche chiamato _Approccio Turco_.
   Dato che la Turchia era super super super inflazionata (un caffè costava milioni), è stata introdotta la lira pesante, ovvero la stessa valuta di prima ma divisa per $1000000$.
 ]
@@ -314,7 +314,7 @@ L'obiettivo dello scaling è rendere l'algoritmo precedentemente presentato poli
 Per farlo andiamo a *ridurre il numero di colonne*. Al posto di usare tutte le colonne ($sum_i v$), le _compattiamo_ abbassando la *scala*, ovvero compattare i valori di diverse colonne in un'unica colonna.
 Per ottenere ciò sarà necessario arrotondare, trasformando la soluzione esatta una soluzione *approssimata*.
 
-#attenzione[
+#warning[
   Questo tipo di tecnica è applicabile solo alla *seconda* versione di DP.
 
   Questo perché, scalando le colonne, approssimiamo i valori riportati dalle colonne (falsandoli):
@@ -331,7 +331,7 @@ Elementi necessari per la scalatura:
 - Fattore di scaling $theta$, ovvero di quanto comprimiamo i valori dell'istanza originaria.
   Lo definiamo come:
   $ theta = (epsilon V) / (2n), quad V = max_(i in n) v_i $
-  #informalmente[
+  #informally[
     $theta$ rappresenta l'unità di misura della nuova scala di valori:
     - Più $theta$ è grande, più comprimiamo (meno colonne, più approssimazione)
     - Più $theta$ è piccolo, meno comprimiamo (più colonne, meno approssimazione)
@@ -340,7 +340,7 @@ Elementi necessari per la scalatura:
 Applicando lo scaling, otteniamo:
 - Nuova istanza dove i valori sono scalati, con numeri reali:
   $ overline(X) = (overline(v_i), w_i, W), quad overline(v_i) = ceil(v_i / theta) theta $
-  #nota[
+  #note[
     Questa istanza ci serve per la dimostrazione, non sta riducendo la scala ma la sta aumentando.
   ]
 - Nuova istanza dove i valori sono scalati, con numeri interi:
@@ -349,7 +349,7 @@ Applicando lo scaling, otteniamo:
 Ogni istanza (non scalata $X$, scalata reale $overline(X)$, scalata intera $hat(X)$) ha una sua soluzione ottima $I$ e valore ottimo $v$:
 $ I^*, overline(I^*), hat(I^*) quad quad v^*, overline(v^*), hat(v^*) $
 
-#esempio[
+#example[
   Supponiamo $n = 4$, $epsilon = 0.2$, $V = 100$:
 
   $theta = (0.2 dot 100)/(2 dot 4) = 20/8 = 2.5$
@@ -361,7 +361,7 @@ $ I^*, overline(I^*), hat(I^*) quad quad v^*, overline(v^*), hat(v^*) $
   Invece di $sum v_i = 185$ colonne, ora abbiamo $sum hat(v_i) = 74$ colonne
 ]
 
-#teorema("Osservazione")[
+#theorem(title: "Osservazione")[
   Risolvere l'istanza reale $overline(I)$ e l'istanza intera $hat(I)$ è la stessa cosa.
   Entrambe forniscono le *stesse soluzioni* in quanto differiscono solamente di un *coefficiente moltiplicativo fissato* $theta$.
   $
@@ -372,18 +372,18 @@ $ I^*, overline(I^*), hat(I^*) quad quad v^*, overline(v^*), hat(v^*) $
   L'istanza $hat(I)$, essendo intera, è risolvibile attraverso la programmazione dinamica.
 ] <knapsack-oss1>
 
-#teorema("Teorema")[
+#theorem[
   Sia $I$ una qualsiasi soluzione ammissibile di $X$ (problema originale non compresso).
 
   La soluzione ottima del problema compresso intero $hat(I^*)$, moltiplicata per $(1 + epsilon)$, è grande almeno quanto una qualsiasi soluzione $I$:
 
   $ (1+epsilon) sum_(i in hat(I^*)) v_i quad >= quad sum_(i in I) v_i $
 
-  #informalmente[
+  #informally[
     Qualsiasi soluzione ammissibile originale ha un valore non superiore al valore della soluzione ottima compressa moltiplicato per il tasso di approssimazione.
   ]
 
-  #dimostrazione[
+  #proof[
     Dato che approssimiamo per eccesso, allora:
     $ ceil(v_i / theta) theta >= v_i, quad forall i $
 
@@ -394,7 +394,7 @@ $ I^*, overline(I^*), hat(I^*) quad quad v^*, overline(v^*), hat(v^*) $
 
     Dato che il problema è di massimizzazione, allora $overline(I^*)$ è ottimo per l'istanza scalata reale, quindi $overline(I^*) >= overline(I)$:
     $
-      sum_(i in I) overline(v_i) quad <= quad sum_(i in overline(I^*)) overline(v_i) underbrace(=, #link-teorema(<knapsack-oss1>)) sum_(i in hat(I^*)) overline(v_i)
+      sum_(i in I) overline(v_i) quad <= quad sum_(i in overline(I^*)) overline(v_i) underbrace(=, #link-theorem(<knapsack-oss1>)) sum_(i in hat(I^*)) overline(v_i)
     $
 
     In generale, quando approssimiamo per eccesso, la differenza tra $a$ e $a'$ è al massimo $theta$:
@@ -430,12 +430,12 @@ $ I^*, overline(I^*), hat(I^*) quad quad v^*, overline(v^*), hat(v^*) $
   ]
 ] <knapsack-teorema1>
 
-#teorema("Teorema")[
+#theorem[
   Applicando la DP alla scalatura intera $hat(X)$, otteniamo come soluzione $limits(sum)_(i in hat(I^*))$, che moltiplicata per il tasso di approssimazione, è migliore del valore della soluzione ottima originale:
   $ (1+epsilon) sum_(i in hat(I^*)) v_i quad >= quad v^* $
 
-  #dimostrazione[
-    La disuguaglianza dimostrata da #link-teorema(<knapsack-teorema1>) vale per ogni $I$, di conseguenza vale anche per quella ottima $I^*$.
+  #proof[
+    La disuguaglianza dimostrata da #link-theorem(<knapsack-teorema1>) vale per ogni $I$, di conseguenza vale anche per quella ottima $I^*$.
     Inoltre la somma di tutti i $v_i$ selezionati da una soluzione $I$, non è altro che il risultato finale $v$.
     $
       (1 + epsilon) sum_(i in hat(I^*)) v_i quad >= quad sum_(i in I^*) v_i quad = quad v^* space quad qed
@@ -454,6 +454,6 @@ Il numero di colonne della tabella DP è quindi $<= n dot hat(V) = O((2n^2) / ep
 
 Di conseguenza la complessità è $O((2 n^3)/ epsilon)$, polinomiale anche su $epsilon$, quindi $in "FPTAS"$.
 
-#teorema("Teorema")[
+#theorem[
   *$ "Knapsack" in "FPTAS" $*
 ]

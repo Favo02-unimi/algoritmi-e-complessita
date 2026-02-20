@@ -1,4 +1,4 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Struttura Albero
 
@@ -114,11 +114,11 @@ I nodi di un albero binario si dividono in:
   ],
 )
 
-#teorema("Proprietà")[
+#theorem(title: "Proprietà")[
   In un albero binario, il numero di foglie $E$ è il numero di nodi interni $I+1$:
   $ |E| = |I| + 1 $
 
-  #dimostrazione[
+  #proof[
     La dimostrazione è per *induzione* strutturale:
     - _Passo base 1_: albero con un solo nodo $|E| = 1, |I| = 0$
     - _Passo base 2_: albero banale con radice e due figli $|E| = 2, |I| = 1$
@@ -128,7 +128,7 @@ I nodi di un albero binario si dividono in:
   ]
 ] <albero-binario-numero-nodi>
 
-#teorema("Corollario")[
+#theorem(title: "Corollario")[
   In un albero il numero di nodi totale $n$:
   $ n = |E|+|I| $
 
@@ -149,20 +149,20 @@ Per poter affermare che una struttura è compressa, allora dobbiamo quantificare
 
 Vogliamo stabilire quanti sono i possibili tipi di alberi binari con $n$ nodi interni, per poi stabilire quanti bit servono per poterli rappresentare distintamente tutti.
 
-#teorema("Teorema")[
+#theorem[
   Il numero di alberi binari con $n$ nodi interni è $ C_n = 1/(n+1) binom(2n, n) $
   chiamato il *numero di Catalano*.
 ]
 
-#teorema("Teorema")[
+#theorem[
   Servono almeno $2n - O(log n)$ bit per rappresentare un albero binario con $n$ nodi *interni*.
 
   Il theoretical lower bound è $2n$:
   $ Z_n = 2n $
 
-  #dimostrazione[
+  #proof[
 
-    #nota[
+    #note[
       Proprietà utili:
       - Approssimazione di #text(red)[Stirling]:
         $ x! approx sqrt(2 pi x) (x/e)^x $ <albero-binario-stirling>
@@ -206,13 +206,13 @@ Ogni nodo è numerato, per livello di profondità e da sinistra verso destra (co
 Creiamo un vettore di $2n+1$ elementi, dove $n$ è il numero di nodi interi:
 - il vettore memorizza $1$ per i nodi interni e $0$ per le foglie
 - usiamo inoltre una struttura rank/select
-#nota[
+#note[
   I figli sinistri saranno sempre di indice dispari, i figli destri saranno sempre di indice pari.
 ]
 
 La rappresentazione richiede $2 n + 1 + o(2n +1) = 2n + o(n)$ bit: è *succinta*.
 
-#esempio[
+#example[
   #figure(
     grid(
       columns: 2,
@@ -389,7 +389,7 @@ Questi non sono altro che tutti i nodi visitati prima di $x$, ovvero:
   ],
 )
 
-Possiamo calcolare questa quantità conoscendo il numero di nodi interni di $T'$ sfruttando la proprietà #link-teorema(<albero-binario-numero-nodi>).
+Possiamo calcolare questa quantità conoscendo il numero di nodi interni di $T'$ sfruttando la proprietà #link-theorem(<albero-binario-numero-nodi>).
 $ |"nodi" T'| = 2 |"nodi interni" T'| + 1 = 2 "rank"_underline(b)(x) + 1 $
 
 Dato che i nodi sono numerati a partire da $0$, allora gli indici dei figli di $x$ sono:
@@ -418,7 +418,7 @@ $
                 ) \
     "rank"(p) & = floor((x-1)/2) \
 $
-Sapendo che rank e select si annullano (#link-teorema(<rank-select-operazioni-inverse>)) in caso $b_p = 1$ (e $p$ lo è dato che ha figli), possiamo applicare la select da entrambe le parti:
+Sapendo che rank e select si annullano (#link-theorem(<rank-select-operazioni-inverse>)) in caso $b_p = 1$ (e $p$ lo è dato che ha figli), possiamo applicare la select da entrambe le parti:
 $
   "select"("rank"(p)) & = "select"(floor((x-1)/2)) \
                     p & = "select"(floor((x-1)/2))
@@ -437,7 +437,7 @@ Solitamente, insieme all'albero, vogliamo anche memorizzare i dati contenuti nei
 
 == Biiezioni fra Alberi Binari, Alberi Generali e Foreste
 
-#nota[
+#note[
   Una biiezione tra due insiemi $X$ e $Y$ è una relazione binaria tale che ad ogni elemento di $X$ corrisponde *uno ed uno solo* elemento di $Y$ (e viceversa).
 ]
 
@@ -446,7 +446,7 @@ Solitamente, insieme all'albero, vogliamo anche memorizzare i dati contenuti nei
 / $T_n$: insieme degli alberi generali con $n$ nodi
 / $D_n$: parola di Dyck con $n$ parentesi aperte
 
-#nota[
+#note[
   Non esiste l'albero vuoto (dato che deve avere una radice), ma esiste la foresta vuota.
 ]
 
@@ -620,7 +620,7 @@ Per ogni nodo $v$ nella foresta:
   ],
 )
 
-#nota[
+#note[
   La trasformazione *preserva* la cardinalità:
   $ |T_(n+1)| = |F_n| = |B_n| = C_n $
 
@@ -710,12 +710,12 @@ Definizione della biiezione $alpha$ ricorsiva:
   ],
 )
 
-#nota[
+#note[
   Traduciamo ricorsivamente ogni foresta ad una parola di Dyck:
   *$ |D_n| = |F_n| = C_n $*
 ]
 
-#attenzione[
+#warning[
   Questa struttura a parentesi rappresenta solo l'albero, senza dati ancillari.
   Per memorizzare dei dati ancillari bisogna portarsi dietro un array con informazioni sulle parentesi aperte (complicato).
 ]

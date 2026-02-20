@@ -1,4 +1,4 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Struttura Sequenza Monotona
 
@@ -9,7 +9,7 @@ $ 0 <= x_0 <= x_1 <= ... <= x_(n-1) < underbrace(U, "universo") $
 - *Primitiva*: dato un indice $i$, ottenere il valore $x_i$
 - *Rappresentazione naive*: ogni intero viene memorizzato usando $log U$ bit
 
-#informalmente[
+#informally[
   Le sequenze monotone sono molto utilizzate in diversi ambiti, ad esempio nel grafo di Webgraph:
   - ogni nodo viene numerato da $0$ a $U$
   - gli adiacenti di un vertice possono essere memorizzati come una sequenza monotona strettamente crescente
@@ -18,7 +18,7 @@ $ 0 <= x_0 <= x_1 <= ... <= x_(n-1) < underbrace(U, "universo") $
 
 == Rappresentazione quasi-succinta di Elias-Fano
 
-#informalmente[
+#informally[
   Ogni numero viene diviso in parte significativa e meno significativa:
   - la parte meno significativa viene memorizzata così com'è (dato che cambia spesso e velocemente)
   - la parte più significativa cambia lentamente, quindi viene compressa. La compressione sfrutta la differenza tra la parte significativa del numero attuale e del precedente
@@ -34,7 +34,7 @@ La rappresentazione in binario di ogni intero $x_i$ della sequenza viene divisa 
 Di queste due parti viene memorizzato:
 - #text(blue)[Bit meno significativi]: vengono memorizzati così come sono, utilizzando $l$ bit per ogni $x_i$:
   $ l_i = x_i mod 2^l $
-  #nota[
+  #note[
     Partendo da $x_i$, si può estrarre la parte meno significativa utilizzando il modulo per $2^l$.
 
     $x_i mod 2^l$ estrae gli ultimi $l$ bit di $x_i$ (*maschera bit a bit*).
@@ -43,13 +43,13 @@ Di queste due parti viene memorizzato:
   $ u_i = floor(x_i/ 2^l) - floor(x_(i-1)/2^l) "in unario" $
   I vari $u_i$, che rappresentano i *gap* (differenze), sono tutti positivi (la minima differenza è $0$).
   Questi $u_i$ sono rappresentati in unario, ovvero $u_i$ zeri seguiti da un uno.
-  #nota[
+  #note[
     Partendo da $x_i$, si può estrarre la parte più significativa utilizzando la divisione per $2^l$.
 
     $floor(x_i / 2^l)$ estrae tutti i bit tranne gli $l$ meno significativi (*shift a destra di $l$* posizioni).
   ]
 
-#esempio[
+#example[
   #figure(
     cetz.canvas(length: 1cm, {
       import cetz.draw: *
@@ -169,7 +169,7 @@ Di queste due parti viene memorizzato:
 
 === Spazio occupato
 
-#nota[
+#note[
   Serie telescopica:
   $
     s_n = sum_(k=1)^n A_(k+1)-A_k = A_(n+1)-A_1
@@ -246,7 +246,7 @@ Per rispondere ad una query, ovvero ricostruire $x_i$ dato l'indice $i$, dobbiam
     x_i = underbrace(("select"_underline("MSB")(i) - i+1), mr("MSB")) dot 2^l + underbrace(mb("LSB"[i dot l : (i+1) dot l]), mb("LSB"))
   $
 
-#nota[
+#note[
   Grazie alla struttura dati rank/select sui bit, possiamo calcolare $"select"_underline("MSB")(i)$ in tempo $O(1)$, rendendo l'accesso a $x_i$ molto efficiente.
 ]
 
@@ -254,7 +254,7 @@ Per rispondere ad una query, ovvero ricostruire $x_i$ dato l'indice $i$, dobbiam
 
 Per stabilire se la rappresentazione proposta è compressa ci serve stimare il theoretical lower bound.
 
-#dimostrazione[
+#proof[
   Dati $n$ e $U$, vogliamo contare il *numero di sequenze monotone valide*:
   $
     0 <= x_0 <= x_1 <= dots <= x_(n-1) < U
@@ -273,7 +273,7 @@ Per stabilire se la rappresentazione proposta è compressa ci serve stimare il t
     - $"*"$ = sono in totale $n$ e rappresentano $c_i$, ovvero la cardinalità con cui un certo numero compare nella sequenza.
     - $"|"$ = $U-1$ separatori (per separare $U$ bucket)
 
-    #informalmente[
+    #informally[
       Le barre rappresentano la separazione tra i vari bucket.
       Dentro ogni bucket ci possono essere $0$ o più elementi (le star).
 
@@ -313,7 +313,7 @@ Per stabilire se la rappresentazione proposta è compressa ci serve stimare il t
     & approx n log U/n + underbrace(mb((n^2)/U), n^2 << U -> approx 0) \
     & approx n log U/n
   $
-  #nota[
+  #note[
     L'assunzione che $n << U$ è realistica. Ad esempio consideriamo $n$ come le amicizie di un utente su Facebook e $U$ come il numero di utenti di Facebook.
   ]
 
@@ -326,7 +326,7 @@ Per stabilire se la rappresentazione proposta è compressa ci serve stimare il t
   $ D_n approx underbrace(3n, o(Z_n)) + underbrace(n ceil(log U/n), Z_n) $
   allora abbiamo una *struttura succinta* $space qed$.
 
-  #attenzione[
+  #warning[
     Da un punto di vista teorico, abbiamo fatto i conti con delle assunzioni ($n << U$) e approssimazioni, non è sempre vero che la struttura è succinta.
     Tuttavia nella pratica lo è, dato che molto raramente accade che $n -> U$.
   ]

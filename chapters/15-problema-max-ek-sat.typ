@@ -1,19 +1,19 @@
-#import "../imports.typ": *
+#import "../template.typ": *
 
 = Problema MaxEkSat [NPOc]
 
-#informalmente[
+#informally[
   Versione ristretta di #link(<problema-max-sat>)[$"MaxSat"$], in cui ogni clausola ha esattamente $k$ letterali.
 ]
 
 Formalmente:
 - *$I_Pi$*: formula CNF, in cui ogni clausola contiene esattamente $k$ letterali (su variabili distinte)
-  #nota[
+  #note[
     Una formula booleana in forma normale congiunta (CNF) è composta da:
     - tante clausole, messe in _AND_ tra di loro
     - ogni clausola è composta da letterali (che possono essere negati), messi in _OR_ tra loro
   ]
-  #esempio[
+  #example[
     Con $k = 3$:
     $underbrace((x_1 or not x_2 or x_4), "clausola") and (x_3 or not x_4 or not x_1) and (x_1 or x_2 or x_3)$
   ]
@@ -21,25 +21,25 @@ Formalmente:
 - *$C_Pi$*: numero di clausole soddisfatte
 - *$t_Pi$*$= max$
 
-#nota[
+#note[
   Se riuscissi a risolvere questa versione del problema in tempo polinomiale riuscirei anche a risolvere il problema $"SAT"$.
 ]
 
-#teorema("Teorema")[
+#theorem[
   $ forall k > 3, quad "Max"E_k"Sat" in "NPOc" $
 ]
 
-#teorema("Teorema")[
+#theorem[
   Un assegnamento *casuale* delle variabili rende in media vere $(2^k-1)/2^k$ delle clausole totali $t$.
   $ E[T] = (2^k - 1) / 2^k t $
 
-  #attenzione[
+  #warning[
     Il teorema "preciso" enuncia un'_uguaglianza stretta_ $=$, ma spesso viene riportato come un _almeno_ $>=$ (utile in problemi SAT dove ogni clausola ha almeno $k$ variabili e non esattamente $k$ variabili).
 
     Entrambe le versioni sono corrette dato che ovviamente $>=$ include anche $=$.
   ]
 
-  #informalmente[
+  #informally[
     Dato che ogni clausola è un OR di $k$ variabili, per essere falsa tutte le $k$ variabili devono essere false.
     Questo è abbastanza raro dato che ognuna è assegnata con probabilità $1/2$.
     La frazione di clausole rese vere è molto alta anche con assegnamenti random.
@@ -47,7 +47,7 @@ Formalmente:
     Ad esempio, una Formula $3$-CNF, anche se non è soddisfacibile, ha in media $7/8$ di clausole rese vere da un assegnamento casuale.
   ]
 
-  #dimostrazione[
+  #proof[
     Siano $X_1, dots, X_n$ le variabili che compaiono nella formula di ingresso.
     Ogni variabile $X_i$ può essere vista come una variabile aleatoria che segue una distribuzione *uniforme* con $p = 1/2$:
     $ forall i = 1,dots,n, quad space X_i tilde "Uniforme"{0,1} $
@@ -66,7 +66,7 @@ Formalmente:
     Sfruttiamo la #link("https://en.wikipedia.org/wiki/Law_of_total_expectation")[legge del valore atteso totale]: date due variabili aleatorie $X$ e $Y$ definite sullo stesso spazio di probabilità, allora:
     $ E[E[X|Y]]=E[X] $
 
-    #informalmente[
+    #informally[
       Anziché calcolare $E[T]$ direttamente lo calcoliamo condizionato su tutti i possibili assegnamenti delle variabili moltiplicati per la loro probabilità $E[T | X = b] dot P[X = b]$.
       Dato che provare ogni valore di una variabile significa provare $0$ e $1$, allora possiamo trasformarlo in una sommatoria: $limits(sum)_(b in 2) E[T | X = b] dot P[X = b]$.
     ]
@@ -121,35 +121,35 @@ Formalmente:
   ]
 ] <maxeksat-clausole-soddisfatte>
 
-#teorema("Teorema")[
+#theorem[
   Sia $t$ il numero di clausole della formula, $C <= t$ una soluzione casuale e $C^* <= t$ la soluzione ottima (ovvero il massimo numero di clausole soddisfacibili).
   $ C <= C^* <= t $
 
-  Per #link-teorema(<maxeksat-clausole-soddisfatte>):
+  Per #link-theorem(<maxeksat-clausole-soddisfatte>):
   $ E[C] = (2^k-1)/2^k t $
 
   Calcoliamo il rapporto di approssimazione atteso:
   $ E[C^* / C] <= t / E[C] <= t / ((2^k-1)/2^k t) = 2^k / (2^k-1) $
 ]
 
-#teorema("Lemma")[
-  #informalmente[
+#theorem(title: "Lemma")[
+  #informally[
     Esiste un modo di scegliere l'assegnamento delle prime $j$ variabili per mantenere un numero medio di clausole soddisfatte: $E[T] >= (2^k-1)/2^k$.
 
     Questa cosa è molto utile per *costruire* un assegnamento che mantenga questa approssimazione:
-    - il teorema #link-teorema(<maxeksat-clausole-soddisfatte>) ci diceva semplicemente che esiste un assegnamento con buona approssimazione
-    - questo lemma #link-teorema(<maxeksat-costruzione-clausole>) ci permette di ottenere questa buona approssimazione per ogni quantità $j$ di variabili assegnate, permettendoci di costruire un buon assegnamento iterativamente
+    - il teorema #link-theorem(<maxeksat-clausole-soddisfatte>) ci diceva semplicemente che esiste un assegnamento con buona approssimazione
+    - questo lemma #link-theorem(<maxeksat-costruzione-clausole>) ci permette di ottenere questa buona approssimazione per ogni quantità $j$ di variabili assegnate, permettendoci di costruire un buon assegnamento iterativamente
   ]
 
-  Generalizzazione del teorema #link-teorema(<maxeksat-clausole-soddisfatte>), dove $j$ era posto a $0$.
+  Generalizzazione del teorema #link-theorem(<maxeksat-clausole-soddisfatte>), dove $j$ era posto a $0$.
 
   Per ogni $j=0,dots,n$ esiste una scelta di bit ${b_1,b_2,dots,b_j} in 2$ tale che:
   $ E[T|X_1=b_1,dots,X_j=b_j] >= (2^k-1)/2^k t $
 
-  #dimostrazione[
+  #proof[
     Per *induzione* su $j$:
 
-    - *Caso base $j=0$*: non vengono scelte variabili, dal teorema #link-teorema(<maxeksat-clausole-soddisfatte>) sappiamo che un qualunque assegnamento casuale soddisfa almeno $E[T] >= (2^k-1)/2^k t space qed$.
+    - *Caso base $j=0$*: non vengono scelte variabili, dal teorema #link-theorem(<maxeksat-clausole-soddisfatte>) sappiamo che un qualunque assegnamento casuale soddisfa almeno $E[T] >= (2^k-1)/2^k t space qed$.
 
     - *Passo induttivo $j >0$*: fino alla variabile precedente $X_(j-1)$ sappiamo che esistono $b_1,dots,b_(j-1) in 2$ assegnamenti per cui vale:
       $ (2^k-1)/2^k t <= E[T|X_1=b_1,dots,X_(j-1)=b_(j-1)] $
@@ -178,7 +178,7 @@ Formalmente:
   ]
 ] <maxeksat-costruzione-clausole>
 
-#teorema("Corollario")[
+#theorem(title: "Corollario")[
   Esiste un assegnamento $b_1, dots, b_n in 2$ (dove $n$ è il numero di variabili della CNF) tale che il numero di clausole soddisfatte è $>= (2^k-1)/2^k t$.
 ]
 
@@ -233,7 +233,7 @@ Formalmente:
   ),
 )
 
-#informalmente[
+#informally[
   L'idea alla base dell'algoritmo è decidere man mano il valore di verità di una variabile $X_i$.
   In particolare viene valutato cosa succede se $X_i = 1$ o $X_i=0$, in termini di clausole future che tale assegnamento rende vere (variabili $Delta$).
 ]
@@ -269,27 +269,27 @@ Sia $h$ il numero di variabili da $X_i$ *in poi* ($X_i$ inclusa). All'istante $i
     &= + 1/2^h
   $
 
-#nota[
+#note[
   Se assegniamo $0$ alla variabile, allora ogni clausola che la comprende, perde possibilità di essere soddisfatta, di conseguenza l'impatto della variabile $X_i$ su quella clausola è negativo ($Delta$ negativo).
 
   Se invece assegniamo $1$ alla variabile, allora la probabilità che la clausola sia soddisfatta diventa $1$, sicuramente un incremento ($Delta$ positivo).
 ]
 
-#attenzione[
+#warning[
   Questo ragionamento vale al contrario se $X_i$ compare negata nella clausola.
 ]
 
-#teorema("Teorema")[
+#theorem[
   L'algoritmo deterministico è una $(2^k/(2^k-1))$-approssimazione per $"Max"E_k"Sat"$.
 
-  #dimostrazione[
+  #proof[
     Sia $t$ il numero di clausole, $overline(t)$ il numero di clausole soddisfatte dall'algoritmo e $t^*$ l'ottimo.
     Calcoliamo il rapporto di approssimazione:
     $
       (t^*)/overline(t) underbrace(<=, "al massimo " t^*\ "soddisfa" t "clausole") t/overline(t)
     $
 
-    Per #link-teorema(<maxeksat-clausole-soddisfatte>) sappiamo che $mr(overline(t) >= (2^k-1)/2^k t)$, di conseguenza:
+    Per #link-theorem(<maxeksat-clausole-soddisfatte>) sappiamo che $mr(overline(t) >= (2^k-1)/2^k t)$, di conseguenza:
     $
       (t^*)/overline(t) & <= t / mr(overline(t)) \
                         & <= t / mr((2^k-1)/2^k t) \
@@ -299,7 +299,7 @@ Sia $h$ il numero di variabili da $X_i$ *in poi* ($X_i$ inclusa). All'istante $i
   ]
 ]
 
-#nota[
+#note[
   Durante il processo di derandomizzazione abbiamo usato la proprietà di *internalità della media*: l'intervallo di valori che una variabile aleatoria può assumere contiene per forza la sua media.
 
   Di conseguenza se, in media, una variabile aleatoria vale $A$, calcolando tutti i suoi valori almeno uno deve valere $>= A$.
