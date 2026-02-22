@@ -3,9 +3,9 @@ name: PR PDF Preview
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    branches: [ main ]
+    branches: [main]
     paths:
-      - '**.typ'
+      - "**.typ"
 
 jobs:
   generate-pdf:
@@ -16,21 +16,21 @@ jobs:
       pull-requests: read
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
-    - name: Setup Typst
-      uses: typst-community/setup-typst@v3
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v3
 
-    - name: Compile Typst document
-      run: |
-        typst compile main.typ algoritmi-e-complessita-preview.pdf
+      - name: Compile Typst document
+        run: |
+          typst compile main.typ ${{ github.event.repository.name }}-preview.pdf
 
-    - name: Upload PDF as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: pr-${{ github.event.pull_request.number }}-preview
-        path: algoritmi-e-complessita-preview.pdf
-        retention-days: 30
+      - name: Upload PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-${{ github.event.pull_request.number }}-preview
+          path: ${{ github.event.repository.name }}-preview.pdf
+          retention-days: 30
