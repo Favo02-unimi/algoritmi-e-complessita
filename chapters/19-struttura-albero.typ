@@ -430,8 +430,8 @@ La struttura mostra un modo per memorizzare la struttura dell'albero.
 Solitamente, insieme all'albero, vogliamo anche memorizzare i dati contenuti nei nodi dell'albero, ovvero i dati ancillari.
 
 - Dati ancillari solo su *nodi interni*: memorizzati in un array lungo quanto il numero di nodi interni dell'albero:
-  - Usare una *select* per sapere dato un nodo dove sarà il suo dato ancillare
-  - Usare una *rank* per sapere dato un dato a che nodo corrisponde
+  - Usare una *rank* per sapere dato un nodo dove sarà il suo dato ancillare
+  - Usare una *select* per sapere dato un dato a che nodo corrisponde
 
 - Dati ancillari anche sulle *foglie*: memorizzati in un array della stessa lunghezza di $b$ (numero totale di nodi), ogni cella dell'array contiene il dato di quel nodo
 
